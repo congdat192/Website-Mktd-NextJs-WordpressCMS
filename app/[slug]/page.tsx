@@ -350,182 +350,245 @@ export default async function WordPressPage({ params }: PageProps) {
     try {
         const product = await getProductBySlug(slug);
         if (product) {
+            // Get related products from same category
+            let relatedProducts = [];
+            try {
+                if (product.product_cat && product.product_cat.length > 0) {
+                    const categoryId = product.product_cat[0];
+                    const allProducts = await getProductsByCategory(categoryId, { perPage: 5 });
+                    relatedProducts = allProducts.filter(p => p.id !== product.id).slice(0, 4);
+                }
+            } catch {
+                // Ignore related products error
+            }
+
             return (
-                <article className="min-h-screen bg-forest-bg">
-                    <div className="max-w-7xl mx-auto px-4 py-12">
-                        {/* Breadcrumb */}
-                        <nav className="mb-8" aria-label="Breadcrumb">
-                            <ol className="flex items-center gap-2 text-sm">
-                                <li>
-                                    <Link href="/" className="text-forest-text/70 hover:text-forest-primary transition-colors">
-                                        Trang chủ
-                                    </Link>
-                                </li>
-                                <li className="text-forest-text/40">/</li>
-                                <li>
-                                    <Link href="/products" className="text-forest-text/70 hover:text-forest-primary transition-colors">
-                                        Sản phẩm
-                                    </Link>
-                                </li>
-                                <li className="text-forest-text/40">/</li>
-                                <li className="text-forest-primary font-medium" aria-current="page">
-                                    {product.title.rendered}
-                                </li>
-                            </ol>
-                        </nav>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-                            {/* Product Image Gallery */}
-                            <div className="sticky top-4 self-start">
-                                {product._embedded?.['wp:featuredmedia']?.[0]?.source_url ? (
-                                    <div className="bg-white rounded-3xl overflow-hidden shadow-lg">
-                                        <div className="aspect-square bg-forest-bg">
-                                            <img
-                                                src={product._embedded['wp:featuredmedia'][0].source_url}
-                                                alt={product._embedded['wp:featuredmedia'][0].alt_text || product.title.rendered}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="bg-white rounded-3xl overflow-hidden shadow-lg">
-                                        <div className="aspect-square bg-forest-bg flex items-center justify-center">
-                                            <svg className="w-24 h-24 text-forest-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Trust Badges */}
-                                <div className="grid grid-cols-3 gap-4 mt-6">
-                                    <div className="bg-white rounded-xl p-4 text-center shadow-md">
-                                        <svg className="w-8 h-8 mx-auto text-forest-primary mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                        </svg>
-                                        <p className="text-xs font-semibold text-forest-text font-heading">Chất lượng</p>
-                                    </div>
-                                    <div className="bg-white rounded-xl p-4 text-center shadow-md">
-                                        <svg className="w-8 h-8 mx-auto text-forest-primary mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                        </svg>
-                                        <p className="text-xs font-semibold text-forest-text font-heading">Thanh toán</p>
-                                    </div>
-                                    <div className="bg-white rounded-xl p-4 text-center shadow-md">
-                                        <svg className="w-8 h-8 mx-auto text-forest-primary mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                                        </svg>
-                                        <p className="text-xs font-semibold text-forest-text font-heading">Giao hàng</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Product Info */}
-                            <div>
-                                <div className="bg-white rounded-3xl shadow-lg p-8 md:p-10">
-                                    {/* Product Title */}
-                                    <h1 className="text-3xl md:text-4xl font-bold text-forest-text mb-6 font-heading">
-                                        {product.title.rendered}
-                                    </h1>
-
-                                    {/* Product Excerpt */}
-                                    {product.excerpt.rendered && (
-                                        <div
-                                            className="text-lg text-forest-text/80 mb-8 pb-8 border-b border-forest-border font-sans"
-                                            dangerouslySetInnerHTML={{ __html: product.excerpt.rendered }}
-                                        />
-                                    )}
-
-                                    {/* Product Features */}
-                                    <div className="space-y-4 mb-8 pb-8 border-b border-forest-border">
-                                        <h3 className="text-lg font-semibold text-forest-text font-heading mb-4">
-                                            Đặc điểm nổi bật:
-                                        </h3>
-                                        <div className="flex items-start gap-3">
-                                            <svg className="w-6 h-6 text-forest-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            <span className="text-forest-text font-sans">100% thiên nhiên, thân thiện môi trường</span>
-                                        </div>
-                                        <div className="flex items-start gap-3">
-                                            <svg className="w-6 h-6 text-forest-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            <span className="text-forest-text font-sans">Chất lượng cao, bền đẹp theo thời gian</span>
-                                        </div>
-                                        <div className="flex items-start gap-3">
-                                            <svg className="w-6 h-6 text-forest-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            <span className="text-forest-text font-sans">Hỗ trợ tư vấn và chăm sóc miễn phí</span>
-                                        </div>
-                                    </div>
-
-                                    {/* CTA Buttons */}
-                                    <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                                        <a
-                                            href="tel:1900xxxx"
-                                            className="flex-1 bg-forest-primary text-white px-8 py-4 rounded-xl font-semibold hover:bg-forest-primary/90 transition-colors text-center inline-flex items-center justify-center gap-2 cursor-pointer"
-                                        >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                            </svg>
-                                            Gọi tư vấn ngay
-                                        </a>
-                                        <Link
-                                            href="/lien-he"
-                                            className="flex-1 border-2 border-forest-primary text-forest-primary px-8 py-4 rounded-xl font-semibold hover:bg-forest-bg transition-colors text-center inline-flex items-center justify-center gap-2 cursor-pointer"
-                                        >
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                            </svg>
-                                            Liên hệ
-                                        </Link>
-                                    </div>
-
-                                    {/* Shipping Info */}
-                                    <div className="bg-forest-bg rounded-xl p-4">
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <svg className="w-5 h-5 text-forest-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            <span className="font-semibold text-forest-text font-heading">Thông tin giao hàng</span>
-                                        </div>
-                                        <p className="text-sm text-forest-text/70 font-sans">
-                                            Giao hàng toàn quốc. Miễn phí vận chuyển cho đơn hàng trên 500.000đ trong nội thành.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Product Description */}
-                                {product.content.rendered && (
-                                    <div className="bg-white rounded-3xl shadow-lg p-8 md:p-10 mt-6">
-                                        <h2 className="text-2xl font-bold text-forest-text mb-6 font-heading">
-                                            Mô tả chi tiết
-                                        </h2>
-                                        <div
-                                            className="wp-content prose prose-lg max-w-none"
-                                            dangerouslySetInnerHTML={{ __html: product.content.rendered }}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Back to Products Link */}
-                        <div className="bg-white rounded-3xl shadow-lg p-6 max-w-7xl mx-auto">
-                            <Link
-                                href="/products"
-                                className="inline-flex items-center text-forest-primary hover:text-forest-primary/80 font-semibold transition-colors"
-                            >
-                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="relative flex min-h-screen w-full flex-col bg-[#F5F5F5]">
+                    {/* Header */}
+                    <header className="sticky top-0 z-20">
+                        <div className="flex items-center bg-white p-4 justify-between border-b border-[#E5E5E5] max-w-7xl mx-auto">
+                            <Link href="/products" className="flex items-center justify-center size-10 text-[#333333] hover:bg-gray-100 rounded-lg transition-colors">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                 </svg>
-                                Quay lại danh sách sản phẩm
+                            </Link>
+                            <div className="hidden md:block">
+                                <h1 className="text-lg font-semibold text-[#333333]">Chi tiết sản phẩm</h1>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button className="flex items-center justify-center size-10 text-[#333333] hover:bg-gray-100 rounded-lg transition-colors">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    <main className="flex-grow pb-32 md:pb-8 max-w-7xl w-full mx-auto">
+                        {/* Desktop: 2-column layout, Mobile: stacked */}
+                        <div className="md:grid md:grid-cols-2 md:gap-8 md:p-6">
+                            {/* Left Column: Image Carousel */}
+                            <div className="md:sticky md:top-24 md:self-start">
+                                <div className="relative bg-white md:rounded-2xl md:overflow-hidden md:shadow-lg">
+                                    <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+                                        {product._embedded?.['wp:featuredmedia']?.[0]?.source_url ? (
+                                            <div className="flex items-stretch snap-center shrink-0 w-full">
+                                                <div className="flex h-full flex-1 flex-col">
+                                                    <div className="w-full aspect-square bg-gray-100 bg-center bg-no-repeat bg-cover" style={{ backgroundImage: `url(${product._embedded['wp:featuredmedia'][0].source_url})` }} />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-stretch snap-center shrink-0 w-full">
+                                                <div className="flex h-full flex-1 flex-col">
+                                                    <div className="w-full aspect-square bg-gray-100 flex items-center justify-center">
+                                                        <svg className="w-24 h-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="absolute bottom-4 left-0 right-0">
+                                        <div className="flex w-full flex-row items-center justify-center gap-2 py-5">
+                                            <div className="h-2 w-8 rounded-full bg-[#228B22]" />
+                                            <div className="h-2 w-2 rounded-full bg-gray-300" />
+                                            <div className="h-2 w-2 rounded-full bg-gray-300" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Column: Product Info */}
+                            <div className="space-y-2 md:space-y-4">
+                                {/* Product Header */}
+                                <div className="bg-white px-4 md:px-6 pt-6 pb-4 md:rounded-2xl md:shadow-lg">
+                                    <h1 className="text-[#333333] tracking-tight text-2xl md:text-3xl font-bold leading-tight">
+                                        {product.title.rendered}
+                                    </h1>
+                                    <p className="text-[#666666] text-sm font-normal leading-normal pt-1">
+                                        SKU: {product.slug.toUpperCase()}
+                                    </p>
+                                    <div className="flex items-baseline justify-between mt-3 md:mt-4">
+                                        <p className="text-[#228B22] text-3xl md:text-4xl font-bold">Liên hệ</p>
+                                        <div className="flex items-center gap-1">
+                                            {[1, 2, 3, 4].map((star) => (
+                                                <svg key={star} className="w-5 h-5 text-yellow-500 fill-current" viewBox="0 0 24 24">
+                                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                                </svg>
+                                            ))}
+                                            <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                            </svg>
+                                            <span className="text-[#666666] text-sm ml-1">(125)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Variant Selector */}
+                                <div className="bg-white px-4 md:px-6 py-4 md:rounded-2xl md:shadow-lg">
+                                    <h2 className="text-[#333333] text-base font-semibold mb-3">Màu sắc: Đen Nhám</h2>
+                                    <div className="flex items-center gap-3">
+                                        <button className="size-10 md:size-12 rounded-full border-2 border-[#228B22] bg-black ring-2 ring-offset-2 ring-[#228B22] hover:scale-110 transition-transform" />
+                                        <button className="size-10 md:size-12 rounded-full border border-[#E5E5E5] bg-[#8B4513] hover:scale-110 transition-transform" />
+                                        <button className="size-10 md:size-12 rounded-full border border-[#E5E5E5] bg-[#B0C4DE] hover:scale-110 transition-transform" />
+                                    </div>
+                                </div>
+
+                                {/* Desktop CTA Buttons - Show only on desktop */}
+                                <div className="hidden md:block bg-white px-6 py-6 rounded-2xl shadow-lg">
+                                    <div className="flex items-center gap-4">
+                                        <button className="flex-1 flex items-center justify-center h-14 rounded-lg bg-[#228B22]/20 text-[#228B22] gap-2 font-bold text-base hover:bg-[#228B22]/30 transition-colors">
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                            </svg>
+                                            Thêm vào giỏ
+                                        </button>
+                                        <Link
+                                            href="/lien-he"
+                                            className="flex-1 flex items-center justify-center h-14 rounded-lg bg-[#228B22] text-white font-bold text-base hover:bg-[#1a6b1a] transition-colors"
+                                        >
+                                            Mua ngay
+                                        </Link>
+                                    </div>
+                                </div>
+
+                                {/* Accordion for Details */}
+                                <div className="space-y-2 md:space-y-3">
+                                    {/* Description */}
+                                    <div className="bg-white px-4 md:px-6 md:rounded-2xl md:shadow-lg">
+                                        <details className="group">
+                                            <summary className="flex cursor-pointer list-none items-center justify-between py-4 text-sm md:text-base font-semibold text-[#333333]">
+                                                Mô tả sản phẩm
+                                                <span className="transition group-open:rotate-180">
+                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                    </svg>
+                                                </span>
+                                            </summary>
+                                            {product.excerpt.rendered && (
+                                                <div
+                                                    className="pb-4 text-[#666666] text-sm md:text-base prose prose-sm md:prose-base max-w-none"
+                                                    dangerouslySetInnerHTML={{ __html: product.excerpt.rendered }}
+                                                />
+                                            )}
+                                        </details>
+                                    </div>
+
+                                    {/* Specifications */}
+                                    <div className="bg-white px-4 md:px-6 md:rounded-2xl md:shadow-lg">
+                                        <details className="group">
+                                            <summary className="flex cursor-pointer list-none items-center justify-between py-4 text-sm md:text-base font-semibold text-[#333333]">
+                                                Thông số kỹ thuật
+                                                <span className="transition group-open:rotate-180">
+                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                    </svg>
+                                                </span>
+                                            </summary>
+                                            <div className="pb-4 text-[#666666] text-sm md:text-base">
+                                                <ul className="space-y-1 list-disc pl-5">
+                                                    <li>Chất liệu: Acetate cao cấp</li>
+                                                    <li>Chiều rộng mắt kính: 52mm</li>
+                                                    <li>Chiều dài cầu kính: 18mm</li>
+                                                    <li>Chiều dài gọng: 145mm</li>
+                                                    <li>Xuất xứ: Hàn Quốc</li>
+                                                </ul>
+                                            </div>
+                                        </details>
+                                    </div>
+
+                                    {/* Warranty */}
+                                    <div className="bg-white px-4 md:px-6 md:rounded-2xl md:shadow-lg">
+                                        <details className="group">
+                                            <summary className="flex cursor-pointer list-none items-center justify-between py-4 text-sm md:text-base font-semibold text-[#333333]">
+                                                Chính sách bảo hành & Đổi trả
+                                                <span className="transition group-open:rotate-180">
+                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                    </svg>
+                                                </span>
+                                            </summary>
+                                            <p className="pb-4 text-[#666666] text-sm md:text-base">
+                                                Bảo hành 12 tháng cho các lỗi từ nhà sản xuất. Hỗ trợ đổi trả trong vòng 7 ngày nếu sản phẩm không đúng mô tả hoặc có lỗi. Vui lòng giữ nguyên tem mác và hóa đơn mua hàng.
+                                            </p>
+                                        </details>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Related Products */}
+                        {relatedProducts.length > 0 && (
+                            <div className="mt-6 md:mt-12 md:px-6">
+                                <h2 className="text-[#333333] text-xl md:text-2xl font-bold px-4 md:px-0 mb-3 md:mb-6">Có thể bạn sẽ thích</h2>
+                                <div className="flex overflow-x-auto scrollbar-hide md:grid md:grid-cols-4 md:gap-6">
+                                    <div className="flex items-stretch px-4 md:px-0 gap-4 md:contents">
+                                        {relatedProducts.map((relatedProduct) => (
+                                            <Link
+                                                key={relatedProduct.id}
+                                                href={`/${relatedProduct.slug}`}
+                                                className="flex h-full flex-col gap-2 rounded-lg min-w-40 md:min-w-0 bg-white md:shadow-lg md:p-4 hover:shadow-xl transition-shadow"
+                                            >
+                                                <div
+                                                    className="w-full aspect-square bg-gray-100 bg-center bg-no-repeat bg-cover rounded-lg"
+                                                    style={{
+                                                        backgroundImage: relatedProduct._embedded?.['wp:featuredmedia']?.[0]?.source_url
+                                                            ? `url(${relatedProduct._embedded['wp:featuredmedia'][0].source_url})`
+                                                            : 'none'
+                                                    }}
+                                                />
+                                                <p className="text-sm font-medium text-[#333333] line-clamp-2">
+                                                    {relatedProduct.title.rendered}
+                                                </p>
+                                                <p className="text-sm font-semibold text-[#228B22]">Liên hệ</p>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Sticky CTA Bar - Mobile only */}
+                    <footer className="md:hidden fixed bottom-0 left-0 right-0 z-10 bg-white/80 backdrop-blur-sm p-4 border-t border-[#E5E5E5]">
+                        <div className="flex items-center gap-4">
+                            <button className="flex-1 flex items-center justify-center h-12 rounded-lg bg-[#228B22]/20 text-[#228B22] gap-2 font-bold text-base">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                Thêm vào giỏ
+                            </button>
+                            <Link
+                                href="/lien-he"
+                                className="flex-1 flex items-center justify-center h-12 rounded-lg bg-[#228B22] text-white font-bold text-base"
+                            >
+                                Mua ngay
                             </Link>
                         </div>
-                    </div>
-                </article>
+                    </footer>
+                </div>
             );
         }
     } catch {

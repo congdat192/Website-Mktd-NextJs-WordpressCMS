@@ -46,6 +46,8 @@ body {
 
 .wp-content img {
   @apply rounded-lg shadow-md;
+  max-width: 100%;
+  height: auto;
 }
 
 .wp-content h1,
@@ -72,4 +74,14 @@ body {
 
 .wp-content li {
   @apply mb-2;
+}
+
+/* Utility class to hide scrollbar for horizontal scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
