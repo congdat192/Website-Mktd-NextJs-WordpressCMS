@@ -1,205 +1,208 @@
-# WordPress Headless Frontend - Next.js 15
+# WordPress + Next.js Headless CMS
 
-Dự án frontend Next.js 15 với App Router, TypeScript và Tailwind CSS, đóng vai trò headless frontend cho WordPress CMS.
+A modern, headless WordPress frontend built with Next.js 15, featuring WooCommerce integration for e-commerce functionality.
 
-## 🚀 Tính năng
+## 🚀 Features
 
-- ✅ **Next.js 15** với App Router
-- ✅ **TypeScript** cho type safety
-- ✅ **Tailwind CSS** cho styling
-- ✅ **WordPress REST API** integration
-- ✅ **ISR (Incremental Static Regeneration)** với revalidate 60s
-- ✅ **SEO-friendly** với dynamic metadata
-- ✅ **Responsive design** cho mobile và desktop
-- ✅ Sẵn sàng deploy lên **Vercel**
+- **Headless WordPress CMS**: Decoupled frontend using WordPress REST API
+- **WooCommerce Integration**: Full e-commerce support with real product data
+- **Modern UI/UX**: Responsive, mobile-first design with Tailwind CSS
+- **SEO Optimized**: Built-in SEO support with Yoast integration
+- **Server-Side Rendering**: Fast page loads with Next.js SSR
+- **TypeScript**: Type-safe development experience
+- **Product Detail Pages**: Beautiful, responsive product pages with:
+  - Dynamic pricing (regular/sale)
+  - Product attributes and variants
+  - Star ratings and reviews
+  - Related products
+  - Sticky CTA on mobile, inline on desktop
 
-## 📁 Cấu trúc dự án
+## 🛠️ Tech Stack
 
-```
-.
-├── app/
-│   ├── blog/
-│   │   ├── [slug]/
-│   │   │   ├── page.tsx          # Chi tiết bài viết
-│   │   │   └── not-found.tsx     # 404 cho blog
-│   │   └── page.tsx              # Danh sách blog
-│   ├── pages/
-│   │   └── [slug]/
-│   │       ├── page.tsx          # WordPress pages
-│   │       └── not-found.tsx     # 404 cho pages
-│   ├── globals.css               # Global styles
-│   ├── layout.tsx                # Root layout
-│   ├── not-found.tsx             # Global 404
-│   └── page.tsx                  # Homepage
-├── components/
-│   ├── Header.tsx                # Header component
-│   └── Footer.tsx                # Footer component
-├── lib/
-│   └── wordpress.ts              # WordPress API client
-├── .env.example                  # Environment variables template
-├── next.config.mjs               # Next.js configuration
-├── tailwind.config.mjs           # Tailwind configuration
-├── tsconfig.json                 # TypeScript configuration
-└── package.json                  # Dependencies
-```
+- **Framework**: Next.js 15.5.7 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **CMS**: WordPress (Headless)
+- **E-commerce**: WooCommerce REST API v3
+- **Deployment**: Vercel
 
-## 🛠️ Cài đặt
+## 📋 Prerequisites
 
-### 1. Cài đặt dependencies
+- Node.js 18+ 
+- npm or yarn
+- WordPress site with:
+  - REST API enabled
+  - WooCommerce plugin installed
+  - WooCommerce REST API credentials
 
-```bash
-npm install
-```
+## 🔧 Installation
 
-### 2. Cấu hình biến môi trường
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/congdat192/Website-Mktd-NextJs-WordpressCMS.git
+   cd Website-Mktd-NextJs-WordpressCMS
+   ```
 
-Tạo file `.env.local` từ template:
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-```bash
-cp .env.example .env.local
-```
+3. **Configure environment variables**
+   
+   Create a `.env.local` file in the root directory:
+   ```env
+   # WordPress API
+   NEXT_PUBLIC_WP_API_URL=https://your-wordpress-site.com/wp-json
+   
+   # WooCommerce API
+   WP_SITE_URL=https://your-wordpress-site.com
+   WC_CONSUMER_KEY=ck_your_consumer_key
+   WC_CONSUMER_SECRET=cs_your_consumer_secret
+   ```
 
-Sau đó chỉnh sửa `.env.local` và thay đổi URL WordPress API của bạn:
+4. **Run development server**
+   ```bash
+   npm run dev
+   ```
 
-```env
-NEXT_PUBLIC_WP_API_URL="https://cms.matkinhtamduc.com/wp-json"
-```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-**Lưu ý:** Thay `https://cms.matkinhtamduc.com` bằng domain WordPress thực tế của bạn.
+## 🌐 Deployment
 
-### 3. Chạy development server
+### Vercel (Recommended)
 
-```bash
-npm run dev
-```
+1. Push your code to GitHub
+2. Import project to Vercel
+3. Add environment variables in Vercel dashboard:
+   - `NEXT_PUBLIC_WP_API_URL`
+   - `WP_SITE_URL`
+   - `WC_CONSUMER_KEY`
+   - `WC_CONSUMER_SECRET`
+4. Deploy!
 
-Mở trình duyệt và truy cập [http://localhost:3000](http://localhost:3000)
-
-## 📝 Các lệnh có sẵn
-
-- `npm run dev` - Chạy development server
-- `npm run build` - Build production
-- `npm run start` - Chạy production server
-- `npm run lint` - Chạy ESLint
-
-## 🌐 WordPress API Configuration
-
-Dự án sử dụng WordPress REST API để lấy dữ liệu. Các endpoint được sử dụng:
-
-- **Posts:** `{WP_API_URL}/wp/v2/posts`
-- **Pages:** `{WP_API_URL}/wp/v2/pages`
-
-### Yêu cầu WordPress
-
-1. WordPress phải bật REST API (mặc định đã bật)
-2. Nếu WordPress ở domain khác, cần cấu hình CORS
-3. Đảm bảo các bài viết/trang đã được publish
-
-### Cấu hình CORS (nếu cần)
-
-Thêm vào `wp-config.php` hoặc sử dụng plugin:
-
-```php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-```
-
-## 🎨 Customization
-
-### Thay đổi branding
-
-Chỉnh sửa các file sau:
-
-- `components/Header.tsx` - Logo và menu
-- `components/Footer.tsx` - Footer content
-- `app/layout.tsx` - Metadata (title, description)
-- `app/page.tsx` - Homepage content
-
-### Thêm routes mới
-
-Tạo thư mục mới trong `app/` theo cấu trúc App Router của Next.js:
+## 📁 Project Structure
 
 ```
-app/
-  products/
-    page.tsx          # /products
-    [slug]/
-      page.tsx        # /products/[slug]
+├── app/                    # Next.js App Router
+│   ├── [slug]/            # Dynamic routes (posts, pages, products)
+│   ├── [...slug]/         # Catch-all routes (categories)
+│   ├── blog/              # Blog listing page
+│   ├── products/          # Products listing page
+│   └── layout.tsx         # Root layout
+├── components/            # React components
+│   ├── Footer.tsx
+│   └── Header.tsx
+├── lib/                   # Utility functions
+│   └── wordpress.ts       # WordPress & WooCommerce API client
+├── public/               # Static assets
+└── .env.local           # Environment variables (not in git)
 ```
 
-### Styling
+## 🔌 API Integration
 
-- Global styles: `app/globals.css`
-- Tailwind config: `tailwind.config.mjs`
-- Component styles: Sử dụng Tailwind utility classes
+### WordPress REST API
 
-## 🚀 Deploy lên Vercel
-
-### Cách 1: Deploy qua Vercel Dashboard
-
-1. Push code lên GitHub
-2. Truy cập [vercel.com](https://vercel.com)
-3. Import repository
-4. Thêm biến môi trường `NEXT_PUBLIC_WP_API_URL`
-5. Deploy
-
-### Cách 2: Deploy qua Vercel CLI
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel
-
-# Deploy production
-vercel --prod
+Fetches posts, pages, and product metadata:
+```typescript
+// Example: Fetch product by slug
+const product = await getProductBySlug('product-slug');
 ```
 
-**Lưu ý:** Nhớ thêm biến môi trường trong Vercel dashboard:
-- Settings → Environment Variables
-- Thêm `NEXT_PUBLIC_WP_API_URL` với giá trị WordPress API URL
+### WooCommerce REST API
 
-## 📚 Tài liệu tham khảo
+Fetches product pricing, attributes, and inventory:
+```typescript
+// Example: Fetch WooCommerce data
+const wcData = await getWooCommerceProduct('product-slug');
+```
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [WordPress REST API Handbook](https://developer.wordpress.org/rest-api/)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+## 🎨 Key Features
 
-## 🔧 Troubleshooting
+### Product Detail Page
 
-### Không load được bài viết
+- **Responsive Design**: 
+  - Mobile: Stacked layout with sticky CTA bar
+  - Desktop: 2-column layout with sticky image
+- **Dynamic Data**:
+  - Real-time pricing from WooCommerce
+  - Product attributes (color, size, etc.)
+  - Star ratings and review count
+  - Stock status
+- **Related Products**: Auto-fetched from same category
+- **SEO**: Meta tags from Yoast SEO
 
-1. Kiểm tra `NEXT_PUBLIC_WP_API_URL` trong `.env.local`
-2. Kiểm tra WordPress REST API có hoạt động: `{WP_URL}/wp-json/wp/v2/posts`
-3. Kiểm tra CORS nếu WordPress ở domain khác
-4. Xem console log để biết lỗi cụ thể
+### Blog & Pages
 
-### Build error
+- Dynamic routing for posts and pages
+- Category archives
+- Embedded media support
+- Yoast SEO integration
 
-1. Chạy `npm install` lại
-2. Xóa `.next` folder và build lại
-3. Kiểm tra TypeScript errors với `npm run lint`
+## 🔐 Environment Variables
 
-### Images không hiển thị
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `NEXT_PUBLIC_WP_API_URL` | WordPress REST API endpoint | Yes |
+| `WP_SITE_URL` | WordPress site URL | Yes |
+| `WC_CONSUMER_KEY` | WooCommerce API consumer key | Yes |
+| `WC_CONSUMER_SECRET` | WooCommerce API consumer secret | Yes |
 
-1. Kiểm tra `next.config.mjs` có cấu hình `remotePatterns`
-2. Đảm bảo WordPress media URLs accessible
-3. Kiểm tra featured images đã được set trong WordPress
+## � Troubleshooting
+
+### Build Errors
+
+- **TypeScript errors**: Ensure all imports are correct
+- **Missing environment variables**: Check `.env.local` file
+- **API connection issues**: Verify WordPress/WooCommerce API credentials
+
+### Common Issues
+
+1. **Images not loading**: Check WordPress media URLs
+2. **Products not displaying**: Verify WooCommerce API credentials
+3. **404 errors**: Ensure WordPress permalinks are set to "Post name"
+
+## 📝 Development
+
+### Adding New Features
+
+1. Create components in `components/`
+2. Add API functions in `lib/wordpress.ts`
+3. Create pages in `app/`
+4. Update TypeScript interfaces as needed
+
+### Code Style
+
+- Use TypeScript for type safety
+- Follow Next.js App Router conventions
+- Use Tailwind CSS for styling
+- Keep components small and reusable
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
 ## 📄 License
 
-MIT License - Tự do sử dụng cho dự án cá nhân và thương mại.
+This project is private and proprietary.
 
-## 👨‍💻 Hỗ trợ
+## � Author
 
-Nếu gặp vấn đề, vui lòng:
-1. Kiểm tra phần Troubleshooting ở trên
-2. Xem lại cấu hình WordPress API
-3. Kiểm tra console log và terminal output
+**Cong Dat**
+- GitHub: [@congdat192](https://github.com/congdat192)
+
+## 🙏 Acknowledgments
+
+- Next.js team for the amazing framework
+- WordPress & WooCommerce for the CMS/e-commerce platform
+- Vercel for hosting and deployment
 
 ---
 
-**Phát triển bởi:** Mắt Kính Tâm Đức Development Team
+**Live Site**: [Your deployed URL]
+
+**WordPress Admin**: [Your WordPress admin URL]
