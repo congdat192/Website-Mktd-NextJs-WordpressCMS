@@ -481,28 +481,37 @@ export default async function WordPressPage({ params }: PageProps) {
                                     </div>
                                 </div>
 
-                                {/* Variant Selector - Only show if product has attributes */}
-                                {product.wc_data?.attributes && product.wc_data.attributes.length > 0 && (
-                                    <div className="bg-white px-4 md:px-6 py-4 md:rounded-2xl md:shadow-lg">
-                                        {product.wc_data.attributes.map((attribute) => (
-                                            <div key={attribute.id} className="mb-4 last:mb-0">
-                                                <h2 className="text-[#333333] text-base font-semibold mb-3">
-                                                    {attribute.name}: {attribute.options[0]}
-                                                </h2>
-                                                <div className="flex items-center gap-2 flex-wrap">
-                                                    {attribute.options.map((option, index) => (
-                                                        <button
-                                                            key={index}
-                                                            className="px-4 py-2 rounded-lg border-2 border-[#228B22] text-[#228B22] hover:bg-[#228B22] hover:text-white transition-colors text-sm font-medium"
-                                                        >
-                                                            {option}
-                                                        </button>
-                                                    ))}
-                                                </div>
+                                {/* Variant Selector - Only show color attribute */}
+                                {product.wc_data?.attributes && (() => {
+                                    const colorAttr = product.wc_data.attributes.find(attr =>
+                                        attr.name.toLowerCase().includes('màu') ||
+                                        attr.slug?.toLowerCase().includes('color') ||
+                                        attr.slug?.toLowerCase().includes('mau')
+                                    );
+
+                                    if (!colorAttr || colorAttr.options.length === 0) return null;
+
+                                    return (
+                                        <div className="bg-white px-4 md:px-6 py-4 md:rounded-2xl md:shadow-lg">
+                                            <h2 className="text-[#333333] text-base font-semibold mb-3">
+                                                {colorAttr.name}: {colorAttr.options[0]}
+                                            </h2>
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                {colorAttr.options.map((option, index) => (
+                                                    <button
+                                                        key={index}
+                                                        className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-colors ${index === 0
+                                                                ? 'border-[#228B22] bg-[#228B22] text-white'
+                                                                : 'border-[#E5E5E5] text-[#333333] hover:border-[#228B22] hover:text-[#228B22]'
+                                                            }`}
+                                                    >
+                                                        {option}
+                                                    </button>
+                                                ))}
                                             </div>
-                                        ))}
-                                    </div>
-                                )}
+                                        </div>
+                                    );
+                                })()}
 
                                 {/* Desktop CTA Buttons - Show only on desktop */}
                                 <div className="hidden md:block bg-white px-6 py-6 rounded-2xl shadow-lg">
