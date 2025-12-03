@@ -428,33 +428,81 @@ export default async function WordPressPage({ params }: PageProps) {
                                         {product.title.rendered}
                                     </h1>
                                     <p className="text-[#666666] text-sm font-normal leading-normal pt-1">
-                                        SKU: {product.slug.toUpperCase()}
+                                        SKU: {product.wc_data?.sku || product.slug.toUpperCase()}
                                     </p>
                                     <div className="flex items-baseline justify-between mt-3 md:mt-4">
-                                        <p className="text-[#228B22] text-3xl md:text-4xl font-bold">Liên hệ</p>
-                                        <div className="flex items-center gap-1">
-                                            {[1, 2, 3, 4].map((star) => (
-                                                <svg key={star} className="w-5 h-5 text-yellow-500 fill-current" viewBox="0 0 24 24">
-                                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                                </svg>
-                                            ))}
-                                            <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                            </svg>
-                                            <span className="text-[#666666] text-sm ml-1">(125)</span>
-                                        </div>
+                                        {product.wc_data?.price ? (
+                                            <div>
+                                                {product.wc_data.on_sale && product.wc_data.sale_price ? (
+                                                    <>
+                                                        <p className="text-[#228B22] text-3xl md:text-4xl font-bold">
+                                                            {parseInt(product.wc_data.sale_price).toLocaleString('vi-VN')}₫
+                                                        </p>
+                                                        <p className="text-[#666666] text-lg line-through mt-1">
+                                                            {parseInt(product.wc_data.regular_price).toLocaleString('vi-VN')}₫
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    <p className="text-[#228B22] text-3xl md:text-4xl font-bold">
+                                                        {parseInt(product.wc_data.price).toLocaleString('vi-VN')}₫
+                                                    </p>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <p className="text-[#228B22] text-3xl md:text-4xl font-bold">Liên hệ</p>
+                                        )}
+                                        {product.wc_data && parseFloat(product.wc_data.average_rating) > 0 ? (
+                                            <div className="flex items-center gap-1">
+                                                {[1, 2, 3, 4, 5].map((star) => {
+                                                    const rating = parseFloat(product.wc_data!.average_rating);
+                                                    if (star <= Math.floor(rating)) {
+                                                        return (
+                                                            <svg key={star} className="w-5 h-5 text-yellow-500 fill-current" viewBox="0 0 24 24">
+                                                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                                            </svg>
+                                                        );
+                                                    } else if (star === Math.ceil(rating) && rating % 1 !== 0) {
+                                                        return (
+                                                            <svg key={star} className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                            </svg>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <svg key={star} className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                            </svg>
+                                                        );
+                                                    }
+                                                })}
+                                                <span className="text-[#666666] text-sm ml-1">({product.wc_data.rating_count})</span>
+                                            </div>
+                                        ) : null}
                                     </div>
                                 </div>
 
-                                {/* Variant Selector */}
-                                <div className="bg-white px-4 md:px-6 py-4 md:rounded-2xl md:shadow-lg">
-                                    <h2 className="text-[#333333] text-base font-semibold mb-3">Màu sắc: Đen Nhám</h2>
-                                    <div className="flex items-center gap-3">
-                                        <button className="size-10 md:size-12 rounded-full border-2 border-[#228B22] bg-black ring-2 ring-offset-2 ring-[#228B22] hover:scale-110 transition-transform" />
-                                        <button className="size-10 md:size-12 rounded-full border border-[#E5E5E5] bg-[#8B4513] hover:scale-110 transition-transform" />
-                                        <button className="size-10 md:size-12 rounded-full border border-[#E5E5E5] bg-[#B0C4DE] hover:scale-110 transition-transform" />
+                                {/* Variant Selector - Only show if product has attributes */}
+                                {product.wc_data?.attributes && product.wc_data.attributes.length > 0 && (
+                                    <div className="bg-white px-4 md:px-6 py-4 md:rounded-2xl md:shadow-lg">
+                                        {product.wc_data.attributes.map((attribute) => (
+                                            <div key={attribute.id} className="mb-4 last:mb-0">
+                                                <h2 className="text-[#333333] text-base font-semibold mb-3">
+                                                    {attribute.name}: {attribute.options[0]}
+                                                </h2>
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    {attribute.options.map((option, index) => (
+                                                        <button
+                                                            key={index}
+                                                            className="px-4 py-2 rounded-lg border-2 border-[#228B22] text-[#228B22] hover:bg-[#228B22] hover:text-white transition-colors text-sm font-medium"
+                                                        >
+                                                            {option}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                </div>
+                                )}
 
                                 {/* Desktop CTA Buttons - Show only on desktop */}
                                 <div className="hidden md:block bg-white px-6 py-6 rounded-2xl shadow-lg">

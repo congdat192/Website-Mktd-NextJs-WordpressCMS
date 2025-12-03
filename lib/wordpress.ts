@@ -5,6 +5,59 @@ if (!WP_API_URL) {
     throw new Error('NEXT_PUBLIC_WP_API_URL is not defined in environment variables');
 }
 
+// WooCommerce API configuration
+const WC_SITE_URL = process.env.WP_SITE_URL || 'https://matkinhtamduc.com';
+const WC_CONSUMER_KEY = process.env.WC_CONSUMER_KEY;
+const WC_CONSUMER_SECRET = process.env.WC_CONSUMER_SECRET;
+
+// WooCommerce Product Attribute
+export interface WCProductAttribute {
+    id: number;
+    name: string;
+    position: number;
+    visible: boolean;
+    variation: boolean;
+    options: string[];
+}
+
+// WooCommerce Product Variation
+export interface WCProductVariation {
+    id: number;
+    sku: string;
+    price: string;
+    regular_price: string;
+    sale_price: string;
+    on_sale: boolean;
+    attributes: Array<{
+        id: number;
+        name: string;
+        option: string;
+    }>;
+    image?: {
+        id: number;
+        src: string;
+        alt: string;
+    };
+}
+
+// WooCommerce Product Data
+export interface WCProduct {
+    id: number;
+    name: string;
+    slug: string;
+    sku: string;
+    price: string;
+    regular_price: string;
+    sale_price: string;
+    on_sale: boolean;
+    stock_status: 'instock' | 'outofstock' | 'onbackorder';
+    stock_quantity: number | null;
+    attributes: WCProductAttribute[];
+    variations: number[];
+    average_rating: string;
+    rating_count: number;
+}
+
 // WordPress Post type
 export interface WPPost {
     id: number;
@@ -21,7 +74,6 @@ export interface WPPost {
     };
     author: number;
     featured_media: number;
-    categories: number[];
     yoast_head?: string;
     yoast_head_json?: {
         title?: string;
@@ -35,7 +87,6 @@ export interface WPPost {
             source_url: string;
             alt_text: string;
         }>;
-        'wp:term'?: Array<Array<WPCategory>>;
     };
 }
 
@@ -221,6 +272,41 @@ export interface WPProduct {
         }>;
         'wp:term'?: Array<Array<WPProductCategory>>;
     };
+    // WooCommerce data (fetched separately)
+    wc_data?: WCProduct;
+}
+
+/**
+ * Fetch WooCommerce product data by slug
+ */
+export async function getWooCommerceProduct(slug: string): Promise<WCProduct | null> {
+    if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET) {
+        console.warn('WooCommerce API credentials not configured');
+        return null;
+    }
+
+    try {
+        const auth = Buffer.from(`${WC_CONSUMER_KEY}:${WC_CONSUMER_SECRET}`).toString('base64');
+        const url = `${WC_SITE_URL}/wp-json/wc/v3/products?slug=${slug}`;
+
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Basic ${auth}`,
+            },
+            next: { revalidate: 60 },
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to fetch WooCommerce product: ${response.status} ${response.statusText}`);
+            return null;
+        }
+
+        const products: WCProduct[] = await response.json();
+        return products.length > 0 ? products[0] : null;
+    } catch (error) {
+        console.error('Error fetching WooCommerce product:', error);
+        return null;
+    }
 }
 
 /**
@@ -269,10 +355,18 @@ export async function getProductBySlug(slug: string): Promise<WPProduct | null> 
             return null;
         }
 
-        return products[0];
+        const product = products[0];
+
+        // Fetch WooCommerce data
+        const wcData = await getWooCommerceProduct(slug);
+        if (wcData) {
+            product.wc_data = wcData;
+        }
+
+        return product;
     } catch (error) {
-        console.error(`Error fetching product with slug "${slug}":`, error);
-        throw error;
+        console.error('Error fetching product:', error);
+        return null;
     }
 }
 
