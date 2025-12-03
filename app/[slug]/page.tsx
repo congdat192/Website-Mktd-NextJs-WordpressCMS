@@ -11,6 +11,7 @@ import {
     getProductCategoryBySlug,
     getPostsByCategory,
     getProductsByCategory,
+    WPProduct,
     getCategories,
     getProductCategories,
 } from '@/lib/wordpress';
