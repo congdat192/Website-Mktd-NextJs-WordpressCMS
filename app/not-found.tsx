@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function NotFound() {
     return (
         <div className="min-h-[60vh] flex items-center justify-center">
@@ -9,12 +11,12 @@ export default function NotFound() {
                 <p className="text-gray-600 mb-8 max-w-md mx-auto">
                     Trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.
                 </p>
-                <a
+                <Link
                     href="/"
                     className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
                 >
                     Quay về trang chủ
-                </a>
+                </Link>
             </div>
         </div>
     );

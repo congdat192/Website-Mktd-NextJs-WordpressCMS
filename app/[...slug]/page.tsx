@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
                 description: category.yoast_head_json?.description || category.description || `Khám phá ${category.name}`,
             };
         }
-    } catch (error) {
+    } catch {
         // Not a product category
     }
 
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
                 description: category.yoast_head_json?.description || category.description || `Tin tức ${category.name}`,
             };
         }
-    } catch (error) {
+    } catch {
         // Not found
     }
 
@@ -209,7 +209,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 </div>
             );
         }
-    } catch (error) {
+    } catch {
         // Not a product category, continue
     }
 
@@ -324,7 +324,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 </div>
             );
         }
-    } catch (error) {
+    } catch {
         // Not a blog category
     }
 

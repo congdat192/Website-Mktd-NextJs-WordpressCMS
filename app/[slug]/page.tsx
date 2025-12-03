@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
                 description: category.yoast_head_json?.description || category.description || `Khám phá ${category.name}`,
             };
         }
-    } catch (error) {
+    } catch {
         // Not a product category
     }
 
@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
                 description: category.yoast_head_json?.description || category.description || `Tin tức ${category.name}`,
             };
         }
-    } catch (error) {
+    } catch {
         // Not a blog category
     }
 
@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
                 description: post.yoast_head_json?.description || description,
             };
         }
-    } catch (error) {
+    } catch {
         // Not a blog post
     }
 
@@ -80,7 +80,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
                 description: product.yoast_head_json?.description || description,
             };
         }
-    } catch (error) {
+    } catch {
         // Not a product
     }
 
@@ -208,7 +208,7 @@ export default async function WordPressPage({ params }: PageProps) {
                 </div>
             );
         }
-    } catch (error) {
+    } catch {
         // Not a product category
     }
 
@@ -284,7 +284,7 @@ export default async function WordPressPage({ params }: PageProps) {
                 </div>
             );
         }
-    } catch (error) {
+    } catch {
         // Not a blog category
     }
 
@@ -328,7 +328,7 @@ export default async function WordPressPage({ params }: PageProps) {
 
                         {/* Back to Blog Link */}
                         <div className="mt-12 pt-8 border-t">
-                            <a
+                            <Link
                                 href="/blog"
                                 className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold"
                             >
@@ -336,13 +336,13 @@ export default async function WordPressPage({ params }: PageProps) {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                 </svg>
                                 Quay lại danh sách tin tức
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </article>
             );
         }
-    } catch (error) {
+    } catch {
         // Not a blog post, continue
     }
 
@@ -472,7 +472,7 @@ export default async function WordPressPage({ params }: PageProps) {
                                             </svg>
                                             Gọi tư vấn ngay
                                         </a>
-                                        <a
+                                        <Link
                                             href="/lien-he"
                                             className="flex-1 border-2 border-forest-primary text-forest-primary px-8 py-4 rounded-xl font-semibold hover:bg-forest-bg transition-colors text-center inline-flex items-center justify-center gap-2 cursor-pointer"
                                         >
@@ -480,7 +480,7 @@ export default async function WordPressPage({ params }: PageProps) {
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                             </svg>
                                             Liên hệ
-                                        </a>
+                                        </Link>
                                     </div>
 
                                     {/* Shipping Info */}
@@ -528,7 +528,7 @@ export default async function WordPressPage({ params }: PageProps) {
                 </article>
             );
         }
-    } catch (error) {
+    } catch {
         // Not a product, continue
     }
 

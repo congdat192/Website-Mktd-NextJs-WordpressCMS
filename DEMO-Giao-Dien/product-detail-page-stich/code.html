@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chi tiết sản phẩm</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#228B22",
+            "background-light": "#F5F5F5",
+            "background-dark": "#102216",
+            "text-light": "#333333",
+            "text-dark": "#E0E0E0",
+            "text-muted-light": "#666666",
+            "text-muted-dark": "#999999",
+            "border-light": "#E5E5E5",
+            "border-dark": "#333333",
+            "card-light": "#FFFFFF",
+            "card-dark": "#1A2C21"
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "0.75rem",
+            "xl": "1rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<header class="sticky top-0 z-20">
+<div class="flex items-center bg-card-light dark:bg-card-dark p-4 justify-between border-b border-border-light dark:border-border-dark">
+<button class="flex items-center justify-center size-10 text-text-light dark:text-text-dark">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<div class="flex items-center justify-end">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 text-text-light dark:text-text-dark gap-2 text-base font-bold">
+<span class="material-symbols-outlined text-2xl">shopping_bag</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow pb-32">
+<!-- Image Carousel -->
+<div class="relative bg-card-light dark:bg-card-dark">
+<div class="flex overflow-x-auto snap-x snap-mandatory [-ms-scrollbar-style:none] [scrollbar-width:none] [&amp;::-webkit-scrollbar]:hidden">
+<div class="flex items-stretch snap-center shrink-0 w-full">
+<div class="flex h-full flex-1 flex-col gap-4">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover flex flex-col p-4 bg-gray-100" data-alt="Front view of the modern wayfarer glasses." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCoXnZfwxNC1Xh0X3LiNTlxV3DvnnI4KfHCCBI33OKD8P2xas4958x0otsVJKZJnbITcUSX1Fesz9PbbnjcY7-UbkgIioAiKdOnYZB-tLoZyYBaoke0hQtHWgAez7s9Q4nI0-tzgH7nrmqC_PsLhe2lVxG0uo08gHIIM8d_rEx2yaawCtEXGeFI7nTtk8BsrVU9f6A47f3X1tpQoC0qT4Y8aO_--xWeRVSYWiLk_fRMn5Bi2GAfabA_qpYXTwUn0dRnDl4r1Ug_Qd8");'></div>
+</div>
+</div>
+<div class="flex items-stretch snap-center shrink-0 w-full">
+<div class="flex h-full flex-1 flex-col gap-4">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover flex flex-col p-4 bg-gray-100" data-alt="Side view of the modern wayfarer glasses showing the temple." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBiQca6cjhV-oQvY6DJ39y94nO9H7kItuWqGUXntBWXLvLkh7mMhr0ehro6epUq-8C2oQsUysxM9SFknUJQbG43xv0zoen3IApFyoFuuo4t2IyGxSnj0ZxV5kZSbUYam3tJ5ioNnBh0eWuz7OLcgm5ifmOosmbbdzxboC5GPLmvHcvdEkmwEmyo-BxIV67noS5YVBbpaXjhpb8wRdYE1pCgEF10lzfgzsgiKEZralISNqXhCWLyjk6UwI6mHRvGnMzFNWZ7u0jlneE");'></div>
+</div>
+</div>
+<div class="flex items-stretch snap-center shrink-0 w-full">
+<div class="flex h-full flex-1 flex-col gap-4">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover flex flex-col p-4 bg-gray-100" data-alt="A model wearing the modern wayfarer glasses." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBt_E5xOFsTYp_9mfJFBp4uR5T9EoagWN-YAOCdJQy2AJGlwFRd5HqwlwAvRf0VtATtz7MiGYaaiSHaVziIatFSdwlN2rUUf8XTzOnh9BMxax9zDo49l4i-fWJdcBkEPDr9nZ21i7RtVU-qPIFMATBWB9sBv26lmvfoUAcJiXhmb4VOfm5L-cFks_6OASg37uPpE2FK1DTsB8ln5gGAadjn7VEXd8aG7D6hEh5h7IHu7Tj4SDCsROOGJRPue1qigBLYQnnZ9bob2co");'></div>
+</div>
+</div>
+</div>
+<div class="absolute bottom-4 left-0 right-0">
+<div class="flex w-full flex-row items-center justify-center gap-2 py-5">
+<div class="h-2 w-8 rounded-full bg-primary"></div>
+<div class="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+<div class="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+</div>
+</div>
+</div>
+<!-- Product Header -->
+<div class="bg-card-light dark:bg-card-dark px-4 pt-6 pb-4">
+<h1 class="text-text-light dark:text-text-dark tracking-tight text-2xl font-bold leading-tight text-left">Gọng Kính Unisex "The Minimalist"</h1>
+<p class="text-text-muted-light dark:text-text-muted-dark text-sm font-normal leading-normal pt-1">SKU: WV-2024</p>
+<div class="flex items-baseline justify-between mt-3">
+<p class="text-primary text-3xl font-bold">1.250.000₫</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-yellow-500 text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-yellow-500 text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-yellow-500 text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-yellow-500 text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-yellow-500 text-lg">star_half</span>
+<span class="text-text-muted-light dark:text-text-muted-dark text-sm ml-1">(125)</span>
+</div>
+</div>
+</div>
+<!-- Variant Selector -->
+<div class="bg-card-light dark:bg-card-dark px-4 py-4 mt-2">
+<h2 class="text-text-light dark:text-text-dark text-base font-semibold mb-3">Màu sắc: Đen Nhám</h2>
+<div class="flex items-center gap-3">
+<button class="size-10 rounded-full border-2 border-primary bg-black ring-2 ring-offset-2 ring-primary dark:ring-offset-card-dark"></button>
+<button class="size-10 rounded-full border border-border-light dark:border-border-dark bg-[#8B4513]"></button>
+<button class="size-10 rounded-full border border-border-light dark:border-border-dark bg-[#B0C4DE]"></button>
+</div>
+</div>
+<!-- Accordion for Details -->
+<div class="mt-2 space-y-2">
+<div class="bg-card-light dark:bg-card-dark px-4">
+<details class="group">
+<summary class="flex cursor-pointer list-none items-center justify-between py-4 text-sm font-semibold text-text-light dark:text-text-dark">
+              Mô tả sản phẩm
+              <span class="transition group-open:rotate-180">
+<span class="material-symbols-outlined">expand_more</span>
+</span>
+</summary>
+<p class="pb-4 text-text-muted-light dark:text-text-muted-dark text-sm">Với thiết kế tối giản và hiện đại, gọng kính "The Minimalist" phù hợp cho cả nam và nữ, dễ dàng kết hợp với mọi phong cách. Sản phẩm là sự lựa chọn hoàn hảo cho những ai yêu thích sự thanh lịch và tinh tế.</p>
+</details>
+</div>
+<div class="bg-card-light dark:bg-card-dark px-4">
+<details class="group">
+<summary class="flex cursor-pointer list-none items-center justify-between py-4 text-sm font-semibold text-text-light dark:text-text-dark">
+              Thông số kỹ thuật
+              <span class="transition group-open:rotate-180">
+<span class="material-symbols-outlined">expand_more</span>
+</span>
+</summary>
+<div class="pb-4 text-text-muted-light dark:text-text-muted-dark text-sm">
+<ul class="space-y-1 list-disc pl-5">
+<li>Chất liệu: Acetate cao cấp</li>
+<li>Chiều rộng mắt kính: 52mm</li>
+<li>Chiều dài cầu kính: 18mm</li>
+<li>Chiều dài gọng: 145mm</li>
+<li>Xuất xứ: Hàn Quốc</li>
+</ul>
+</div>
+</details>
+</div>
+<div class="bg-card-light dark:bg-card-dark px-4">
+<details class="group">
+<summary class="flex cursor-pointer list-none items-center justify-between py-4 text-sm font-semibold text-text-light dark:text-text-dark">
+              Chính sách bảo hành &amp; Đổi trả
+              <span class="transition group-open:rotate-180">
+<span class="material-symbols-outlined">expand_more</span>
+</span>
+</summary>
+<p class="pb-4 text-text-muted-light dark:text-text-muted-dark text-sm">Bảo hành 12 tháng cho các lỗi từ nhà sản xuất. Hỗ trợ đổi trả trong vòng 7 ngày nếu sản phẩm không đúng mô tả hoặc có lỗi. Vui lòng giữ nguyên tem mác và hóa đơn mua hàng.</p>
+</details>
+</div>
+</div>
+<!-- You Might Also Like -->
+<div class="mt-6">
+<h2 class="text-text-light dark:text-text-dark text-xl font-bold px-4 mb-3">Có thể bạn sẽ thích</h2>
+<div class="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&amp;::-webkit-scrollbar]:hidden">
+<div class="flex items-stretch px-4 gap-4">
+<div class="flex h-full flex-col gap-2 rounded-lg min-w-40">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-lg flex flex-col bg-gray-100" data-alt="Classic aviator sunglasses on a light background." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBsevBcaYi7lSw7IrO8T5nqL4GYJGZ17uh6W-W_f141xINEB3CzEIsq7QWCH_P1AeIkEOQsMKCs6z35R83LfMzDvZx1B5hZvS8k8cq0ecPM9deHVhvrA466RMGN3fBhc80JCpmTO2JrHL1AOS55BEFBLFNSOcnOaoWBQYhpNKL3AM-XJHQxwpnZxQIOKi7CunzX_7SuvPG_GCeidjk8yrYSDQfnQxA5Nn640ym__DIdfoSYWFz9-HPVJd4qyK9DYkxUCwblBsCDLDI");'></div>
+<p class="text-sm font-medium text-text-light dark:text-text-dark">Urban Explorer</p>
+<p class="text-sm font-semibold text-primary">980.000₫</p>
+</div>
+<div class="flex h-full flex-col gap-2 rounded-lg min-w-40">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-lg flex flex-col bg-gray-100" data-alt="Round vintage style glasses against a neutral backdrop." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDD98uUL45qu4xaMobVp13H_RAtoy2XTZgHeqb3gy5qnUWwlQH1p_nbSTf0oVuSPGgSu60oG2WCSbpzxJDFIRErHmCadpNZj3_LpM0ow8IfTPLdpJw2Tjy8iedx4OLZL37_pNhglNp-zNrDAO04SWcQzMdDy506AoSQ3xHiTa7PPZRWnbpALl58cudgqLZ9T6Ck9eKSUZqK9aO5UuvzAdZzAEoSa6YFBllHftDqgAQRxCLrFmTXU43CETO8v-ihyoAELGWayKBMmkY");'></div>
+<p class="text-sm font-medium text-text-light dark:text-text-dark">Retro Round</p>
+<p class="text-sm font-semibold text-primary">1.100.000₫</p>
+</div>
+<div class="flex h-full flex-col gap-2 rounded-lg min-w-40">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-lg flex flex-col bg-gray-100" data-alt="Stylish cat-eye glasses for a fashionable look." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAQG-ZLmCdtRmuFNn6D9G6sIYPUOThfrXb4kmuYBcvGjc4jz_L0DtGkzQHmoovIFNIZH3cl60Ygg76HLWEOjIpbpAWuDuyEIuve2A4z6U8O217ld8WSCrERqH0Z_GxwUPpEwlsNxCiCrB7OuMp8Xbr66uBG0juTX9hbCLEpS0uSP1vbCafxj4M2P3oBGJTYbjbZ-L71058jDIC2h_sK-3Xh-mMQLmy76j0I3B1N-VvF1tKB337E81nxuLidthbGHaCq0MofixvM78Y");'></div>
+<p class="text-sm font-medium text-text-light dark:text-text-dark">Cat-Eye Chic</p>
+<p class="text-sm font-semibold text-primary">1.450.000₫</p>
+</div>
+<div class="flex h-full flex-col gap-2 rounded-lg min-w-40">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-lg flex flex-col bg-gray-100" data-alt="Bold square frame glasses making a statement." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDhFkeecsNcQGJhPBkkWYXeqOMkkceoT32n7hd8U0ba3AzKd5Znn0R6h2_3AEfa0onwMmNCsXp-m0QlGZea1NRzrwuguSEJO3b761Skoi9xA8limqZOlTqvYYEF4j8aOMgwX5j-kkDKuwOUrT1yYV6eNSxNE_jyNe4BtB5Di3Fgl8iXzUZeZ6RlZKg5oYnSPiXoqA-8qV8yZQTvQA71gcTqowxJrfw41V8V867xp7lZp6m7MPwbYIZzKuv_QfiXGvM25pirDVBWrV8");'></div>
+<p class="text-sm font-medium text-text-light dark:text-text-dark">The Scholar</p>
+<p class="text-sm font-semibold text-primary">890.000₫</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky CTA Bar -->
+<footer class="fixed bottom-0 left-0 right-0 z-10 bg-card-light/80 dark:bg-card-dark/80 backdrop-blur-sm p-4 border-t border-border-light dark:border-border-dark">
+<div class="flex items-center gap-4">
+<button class="flex-1 flex items-center justify-center h-12 rounded-lg bg-primary/20 text-primary gap-2 font-bold text-base">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+          Thêm vào giỏ
+        </button>
+<button class="flex-1 flex items-center justify-center h-12 rounded-lg bg-primary text-white font-bold text-base">
+          Mua ngay
+        </button>
+</div>
+</footer>
+</div>
+</body></html>

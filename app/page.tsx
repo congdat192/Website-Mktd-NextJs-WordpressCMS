@@ -1,13 +1,13 @@
 import Link from 'next/link';
-import { getPosts } from '@/lib/wordpress';
+import { getPosts, type WPPost } from '@/lib/wordpress';
 
 export default async function HomePage() {
     // Fetch latest 3 posts for the news section
-    let latestPosts = [];
+    let latestPosts: WPPost[] = [];
     try {
         latestPosts = await getPosts({ perPage: 3 });
     } catch (error) {
-        console.error('Failed to fetch posts for homepage:', error);
+        console.error('Failed to fetch latest posts:', error);
     }
 
     return (
@@ -123,7 +123,7 @@ export default async function HomePage() {
                                         </time>
                                         <h3 className="text-xl font-semibold mt-2 mb-3">
                                             <Link
-                                                href={`/${post.slug}`}
+                                                href={`/ ${post.slug} `}
                                                 className="hover:text-blue-600 transition-colors"
                                             >
                                                 {post.title.rendered}
@@ -134,7 +134,7 @@ export default async function HomePage() {
                                             dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
                                         />
                                         <Link
-                                            href={`/${post.slug}`}
+                                            href={`/ ${post.slug} `}
                                             className="inline-block mt-4 text-blue-600 hover:text-blue-700 font-semibold"
                                         >
                                             Đọc thêm →

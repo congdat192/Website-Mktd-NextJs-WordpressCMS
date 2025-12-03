@@ -1,11 +1,11 @@
-import { getProducts } from '@/lib/wordpress';
+import { getProducts, type WPProduct } from '@/lib/wordpress';
 import type { Metadata } from 'next';
 import ProductCard from '@/components/ProductCard';
 import ProductFilter from '@/components/ProductFilter';
 
 export const metadata: Metadata = {
-    title: 'Sản phẩm - Green Forest',
-    description: 'Khám phá những sản phẩm thiên nhiên, thân thiện với môi trường',
+    title: 'Sản phẩm - Mắt Kính Tâm Đức',
+    description: 'Khám phá bộ sưu tập gọng kính, tròng kính và kính mát đa dạng',
 };
 
 // Helper function to strip HTML tags
@@ -14,7 +14,7 @@ function stripHtml(html: string): string {
 }
 
 export default async function ProductsPage() {
-    let products = [];
+    let products: WPProduct[] = [];
     let error = null;
 
     try {

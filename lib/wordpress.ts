@@ -172,7 +172,7 @@ export interface WPCategory {
     slug: string;
     taxonomy: string;
     parent: number;
-    meta: any;
+    meta: Record<string, unknown>;
     yoast_head?: string;
     yoast_head_json?: {
         title?: string;

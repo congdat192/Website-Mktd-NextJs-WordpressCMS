@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getPosts } from '@/lib/wordpress';
+import { getPosts, type WPPost } from '@/lib/wordpress';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-    let posts = [];
+    let posts: WPPost[] = [];
     let error = null;
 
     try {
