@@ -14,6 +14,7 @@ const WC_CONSUMER_SECRET = process.env.WC_CONSUMER_SECRET;
 export interface WCProductAttribute {
     id: number;
     name: string;
+    slug?: string;
     position: number;
     visible: boolean;
     variation: boolean;
