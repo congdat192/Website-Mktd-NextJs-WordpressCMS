@@ -351,7 +351,7 @@ export default async function WordPressPage({ params }: PageProps) {
         const product = await getProductBySlug(slug);
         if (product) {
             // Get related products from same category
-            let relatedProducts = [];
+            let relatedProducts: WPProduct[] = [];
             try {
                 if (product.product_cat && product.product_cat.length > 0) {
                     const categoryId = product.product_cat[0];
@@ -501,8 +501,8 @@ export default async function WordPressPage({ params }: PageProps) {
                                                     <button
                                                         key={index}
                                                         className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-colors ${index === 0
-                                                                ? 'border-[#228B22] bg-[#228B22] text-white'
-                                                                : 'border-[#E5E5E5] text-[#333333] hover:border-[#228B22] hover:text-[#228B22]'
+                                                            ? 'border-[#228B22] bg-[#228B22] text-white'
+                                                            : 'border-[#E5E5E5] text-[#333333] hover:border-[#228B22] hover:text-[#228B22]'
                                                             }`}
                                                     >
                                                         {option}
