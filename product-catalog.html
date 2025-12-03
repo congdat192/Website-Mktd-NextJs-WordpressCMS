@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Mục Sản Phẩm - Green Forest</title>
+
+    <!-- Google Fonts - Modern Professional -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'forest-primary': '#2E8B57',
+                        'forest-secondary': '#87CEEB',
+                        'forest-cta': '#FFD700',
+                        'forest-bg': '#F0FFF4',
+                        'forest-text': '#1A3320',
+                        'forest-border': '#C6E6C6',
+                    },
+                    fontFamily: {
+                        'heading': ['Poppins', 'sans-serif'],
+                        'body': ['Open Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-forest-bg text-forest-text">
+
+    <!-- Floating Navbar -->
+    <nav class="fixed top-4 left-4 right-4 z-50 bg-white/95 backdrop-blur-sm shadow-lg rounded-2xl">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-forest-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-semibold font-heading text-forest-text">Green Forest</h1>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#" class="text-forest-text hover:text-forest-primary transition-colors duration-200">Trang chủ</a>
+                    <a href="#" class="text-forest-primary font-medium">Sản phẩm</a>
+                    <a href="#" class="text-forest-text hover:text-forest-primary transition-colors duration-200">Về chúng tôi</a>
+                    <a href="#" class="text-forest-text hover:text-forest-primary transition-colors duration-200">Liên hệ</a>
+                </div>
+
+                <!-- Search & Cart -->
+                <div class="flex items-center gap-4">
+                    <button class="p-2 hover:bg-forest-bg rounded-lg transition-colors duration-200 cursor-pointer" aria-label="Tìm kiếm">
+                        <svg class="w-6 h-6 text-forest-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                    <button class="p-2 hover:bg-forest-bg rounded-lg transition-colors duration-200 cursor-pointer relative" aria-label="Giỏ hàng">
+                        <svg class="w-6 h-6 text-forest-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                        <span class="absolute -top-1 -right-1 w-5 h-5 bg-forest-cta text-forest-text text-xs font-semibold rounded-full flex items-center justify-center">3</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content - Account for fixed navbar -->
+    <main class="pt-28 px-4">
+
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto mb-16">
+            <div class="bg-gradient-to-r from-forest-primary to-forest-secondary rounded-3xl p-12 text-white">
+                <div class="max-w-3xl">
+                    <h2 class="text-4xl md:text-5xl font-bold font-heading mb-4">Khám Phá Sản Phẩm Thiên Nhiên</h2>
+                    <p class="text-lg text-white/90 mb-8 font-body">Những sản phẩm chất lượng cao, thân thiện với môi trường, mang đến sự bền vững cho cuộc sống của bạn.</p>
+                    <button class="bg-forest-cta text-forest-text px-8 py-3 rounded-xl font-semibold hover:bg-forest-cta/90 transition-colors duration-200 cursor-pointer">
+                        Xem ngay
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter Section -->
+        <section class="max-w-7xl mx-auto mb-12">
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <!-- Categories -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="text-sm font-semibold text-forest-text">Danh mục:</span>
+                        <button class="px-4 py-2 bg-forest-primary text-white rounded-lg font-medium transition-colors duration-200 cursor-pointer">
+                            Tất cả
+                        </button>
+                        <button class="px-4 py-2 bg-white border border-forest-border text-forest-text rounded-lg hover:bg-forest-bg transition-colors duration-200 cursor-pointer">
+                            Sản phẩm xanh
+                        </button>
+                        <button class="px-4 py-2 bg-white border border-forest-border text-forest-text rounded-lg hover:bg-forest-bg transition-colors duration-200 cursor-pointer">
+                            Nội thất
+                        </button>
+                        <button class="px-4 py-2 bg-white border border-forest-border text-forest-text rounded-lg hover:bg-forest-bg transition-colors duration-200 cursor-pointer">
+                            Trang trí
+                        </button>
+                        <button class="px-4 py-2 bg-white border border-forest-border text-forest-text rounded-lg hover:bg-forest-bg transition-colors duration-200 cursor-pointer">
+                            Chăm sóc
+                        </button>
+                    </div>
+
+                    <!-- Sort -->
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-semibold text-forest-text">Sắp xếp:</span>
+                        <select class="px-4 py-2 border border-forest-border rounded-lg bg-white text-forest-text cursor-pointer focus:outline-none focus:ring-2 focus:ring-forest-primary">
+                            <option>Mới nhất</option>
+                            <option>Giá thấp đến cao</option>
+                            <option>Giá cao đến thấp</option>
+                            <option>Phổ biến nhất</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Grid -->
+        <section class="max-w-7xl mx-auto mb-16">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+                <!-- Product Card 1 -->
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-200 cursor-pointer group">
+                    <div class="aspect-square bg-forest-bg relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1545241047-6083a3684587?w=400&h=400&fit=crop"
+                             alt="Cây xanh trang trí nội thất"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute top-3 right-3 bg-forest-cta text-forest-text px-3 py-1 rounded-full text-sm font-semibold">
+                            Hot
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg text-forest-text mb-2 font-heading">Cây Trầu Bà Vàng</h3>
+                            <p class="text-sm text-forest-text/70 font-body">Cây trang trí nội thất, lọc không khí tự nhiên</p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-2xl font-bold text-forest-primary">350.000₫</span>
+                                <span class="text-sm text-forest-text/50 line-through ml-2">450.000₫</span>
+                            </div>
+                            <button class="p-2 bg-forest-primary text-white rounded-lg hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer" aria-label="Thêm vào giỏ hàng">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-200 cursor-pointer group">
+                    <div class="aspect-square bg-forest-bg relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1463620695885-8a91d87c53d0?w=400&h=400&fit=crop"
+                             alt="Chậu cây gốm sứ thủ công"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg text-forest-text mb-2 font-heading">Chậu Gốm Sứ Thủ Công</h3>
+                            <p class="text-sm text-forest-text/70 font-body">Chậu cây gốm sứ cao cấp, thiết kế tối giản</p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-2xl font-bold text-forest-primary">180.000₫</span>
+                            </div>
+                            <button class="p-2 bg-forest-primary text-white rounded-lg hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer" aria-label="Thêm vào giỏ hàng">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-200 cursor-pointer group">
+                    <div class="aspect-square bg-forest-bg relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1509937528035-ad76254b0356?w=400&h=400&fit=crop"
+                             alt="Bình tưới cây kim loại"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute top-3 right-3 bg-forest-secondary text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            Mới
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg text-forest-text mb-2 font-heading">Bình Tưới Cây Kim Loại</h3>
+                            <p class="text-sm text-forest-text/70 font-body">Bình tưới thiết kế Scandinavian, bền đẹp</p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-2xl font-bold text-forest-primary">220.000₫</span>
+                            </div>
+                            <button class="p-2 bg-forest-primary text-white rounded-lg hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer" aria-label="Thêm vào giỏ hàng">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 4 -->
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-200 cursor-pointer group">
+                    <div class="aspect-square bg-forest-bg relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1459156212016-c812468e2115?w=400&h=400&fit=crop"
+                             alt="Phân bón hữu cơ tự nhiên"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg text-forest-text mb-2 font-heading">Phân Bón Hữu Cơ</h3>
+                            <p class="text-sm text-forest-text/70 font-body">100% tự nhiên, an toàn cho cây và môi trường</p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-2xl font-bold text-forest-primary">120.000₫</span>
+                            </div>
+                            <button class="p-2 bg-forest-primary text-white rounded-lg hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer" aria-label="Thêm vào giỏ hàng">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 5 -->
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-200 cursor-pointer group">
+                    <div class="aspect-square bg-forest-bg relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1466781783364-36c955e42a7f?w=400&h=400&fit=crop"
+                             alt="Giá treo cây gỗ tự nhiên"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg text-forest-text mb-2 font-heading">Giá Treo Cây Gỗ</h3>
+                            <p class="text-sm text-forest-text/70 font-body">Gỗ tự nhiên, thiết kế tối giản hiện đại</p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-2xl font-bold text-forest-primary">580.000₫</span>
+                            </div>
+                            <button class="p-2 bg-forest-primary text-white rounded-lg hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer" aria-label="Thêm vào giỏ hàng">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 6 -->
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-200 cursor-pointer group">
+                    <div class="aspect-square bg-forest-bg relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400&h=400&fit=crop"
+                             alt="Bộ dụng cụ làm vườn mini"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg text-forest-text mb-2 font-heading">Bộ Dụng Cụ Làm Vườn</h3>
+                            <p class="text-sm text-forest-text/70 font-body">Bộ 5 món, chất liệu inox cao cấp</p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-2xl font-bold text-forest-primary">290.000₫</span>
+                            </div>
+                            <button class="p-2 bg-forest-primary text-white rounded-lg hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer" aria-label="Thêm vào giỏ hàng">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 7 -->
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-200 cursor-pointer group">
+                    <div class="aspect-square bg-forest-bg relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=400&h=400&fit=crop"
+                             alt="Cây sen đá mini"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute top-3 right-3 bg-forest-cta text-forest-text px-3 py-1 rounded-full text-sm font-semibold">
+                            Best
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg text-forest-text mb-2 font-heading">Cây Sen Đá Mini</h3>
+                            <p class="text-sm text-forest-text/70 font-body">Dễ chăm sóc, phù hợp bàn làm việc</p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-2xl font-bold text-forest-primary">85.000₫</span>
+                            </div>
+                            <button class="p-2 bg-forest-primary text-white rounded-lg hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer" aria-label="Thêm vào giỏ hàng">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 8 -->
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-200 cursor-pointer group">
+                    <div class="aspect-square bg-forest-bg relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=400&fit=crop"
+                             alt="Terrarium thủy tinh"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-lg text-forest-text mb-2 font-heading">Terrarium Thủy Tinh</h3>
+                            <p class="text-sm text-forest-text/70 font-body">Vườn mini trong lọ, tự động điều hòa</p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-2xl font-bold text-forest-primary">450.000₫</span>
+                            </div>
+                            <button class="p-2 bg-forest-primary text-white rounded-lg hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer" aria-label="Thêm vào giỏ hàng">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-center items-center gap-2 mt-12">
+                <button class="p-2 border border-forest-border rounded-lg hover:bg-forest-bg transition-colors duration-200 cursor-pointer" aria-label="Trang trước">
+                    <svg class="w-5 h-5 text-forest-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button class="px-4 py-2 bg-forest-primary text-white rounded-lg font-medium cursor-pointer">1</button>
+                <button class="px-4 py-2 border border-forest-border rounded-lg hover:bg-forest-bg transition-colors duration-200 cursor-pointer">2</button>
+                <button class="px-4 py-2 border border-forest-border rounded-lg hover:bg-forest-bg transition-colors duration-200 cursor-pointer">3</button>
+                <button class="px-4 py-2 border border-forest-border rounded-lg hover:bg-forest-bg transition-colors duration-200 cursor-pointer">4</button>
+                <button class="p-2 border border-forest-border rounded-lg hover:bg-forest-bg transition-colors duration-200 cursor-pointer" aria-label="Trang sau">
+                    <svg class="w-5 h-5 text-forest-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="max-w-7xl mx-auto mb-16">
+            <div class="bg-white rounded-3xl shadow-lg p-12 text-center">
+                <h2 class="text-3xl font-bold text-forest-text mb-4 font-heading">Không tìm thấy sản phẩm phù hợp?</h2>
+                <p class="text-forest-text/70 mb-8 font-body max-w-2xl mx-auto">
+                    Chúng tôi luôn sẵn sàng tư vấn và giúp bạn tìm kiếm sản phẩm hoàn hảo cho không gian của bạn.
+                </p>
+                <button class="bg-forest-primary text-white px-8 py-3 rounded-xl font-semibold hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer inline-flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Liên hệ tư vấn
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-forest-border">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Company Info -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-forest-primary rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold font-heading text-forest-text">Green Forest</h3>
+                    </div>
+                    <p class="text-sm text-forest-text/70 font-body">Mang thiên nhiên vào không gian sống của bạn với những sản phẩm xanh chất lượng cao.</p>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-semibold text-forest-text mb-4 font-heading">Liên kết nhanh</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-forest-text/70 hover:text-forest-primary transition-colors duration-200">Về chúng tôi</a></li>
+                        <li><a href="#" class="text-forest-text/70 hover:text-forest-primary transition-colors duration-200">Sản phẩm</a></li>
+                        <li><a href="#" class="text-forest-text/70 hover:text-forest-primary transition-colors duration-200">Blog</a></li>
+                        <li><a href="#" class="text-forest-text/70 hover:text-forest-primary transition-colors duration-200">Liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h4 class="font-semibold text-forest-text mb-4 font-heading">Hỗ trợ</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-forest-text/70 hover:text-forest-primary transition-colors duration-200">Chính sách đổi trả</a></li>
+                        <li><a href="#" class="text-forest-text/70 hover:text-forest-primary transition-colors duration-200">Hướng dẫn chăm sóc</a></li>
+                        <li><a href="#" class="text-forest-text/70 hover:text-forest-primary transition-colors duration-200">Câu hỏi thường gặp</a></li>
+                        <li><a href="#" class="text-forest-text/70 hover:text-forest-primary transition-colors duration-200">Giao hàng</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="font-semibold text-forest-text mb-4 font-heading">Đăng ký nhận tin</h4>
+                    <p class="text-sm text-forest-text/70 mb-4 font-body">Nhận thông tin ưu đãi và mẹo chăm sóc cây</p>
+                    <div class="flex gap-2">
+                        <input type="email"
+                               placeholder="Email của bạn"
+                               class="flex-1 px-4 py-2 border border-forest-border rounded-lg focus:outline-none focus:ring-2 focus:ring-forest-primary text-sm"
+                               aria-label="Địa chỉ email">
+                        <button class="bg-forest-primary text-white px-4 py-2 rounded-lg hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer" aria-label="Đăng ký">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="pt-8 border-t border-forest-border text-center text-sm text-forest-text/70 font-body">
+                <p>&copy; 2024 Green Forest. Thiết kế với UI/UX Pro Max Skill.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

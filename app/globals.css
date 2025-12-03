@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Glassmorphism Effects */
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .glass-dark {
+    background: rgba(28, 25, 23, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+/* WordPress content styles */
+.wp-content {
+  @apply prose prose-lg max-w-none;
+}
+
+.wp-content img {
+  @apply rounded-lg shadow-md;
+}
+
+.wp-content h1,
+.wp-content h2,
+.wp-content h3,
+.wp-content h4,
+.wp-content h5,
+.wp-content h6 {
+  @apply font-bold mt-8 mb-4;
+}
+
+.wp-content p {
+  @apply mb-4 leading-relaxed;
+}
+
+.wp-content a {
+  @apply text-luxury-cta hover:text-luxury-gold underline transition-colors duration-200;
+}
+
+.wp-content ul,
+.wp-content ol {
+  @apply mb-4 ml-6;
+}
+
+.wp-content li {
+  @apply mb-2;
+}
