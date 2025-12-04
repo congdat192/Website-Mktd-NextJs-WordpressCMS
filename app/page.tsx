@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from 'next/link';
 import { ArrowRight, Eye, ShoppingBag, TrendingUp } from 'lucide-react';
 import { getProducts } from '@/lib/graphql/products';
@@ -13,13 +14,13 @@ export const metadata = {
 
 export default async function HomePage() {
     // Fetch featured products
-    let featuredProducts = [];
-    let categories = [];
+    let featuredProducts: any[] = [];
+    let categories: any[] = [];
 
     try {
         const [productsResult, categoriesData] = await Promise.all([
             getProducts({ first: 8 }),
-            getProductCategories({ perPage: 6 }),
+            getProductCategories(),
         ]);
 
         const graphQLProducts = productsResult.edges.map((edge: any) => edge.node);

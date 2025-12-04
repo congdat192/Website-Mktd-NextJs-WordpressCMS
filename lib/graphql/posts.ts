@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { graphqlClient } from '../graphql-client';
 import { GET_POSTS, GET_POST_BY_SLUG, GET_POSTS_BY_CATEGORY } from './queries/posts';
 

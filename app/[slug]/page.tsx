@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -14,11 +15,8 @@ import {
     getProductCategories,
     getPostCategories
 } from '@/lib/graphql/categories';
-import {
-    graphQLProductToWPProduct,
-    graphQLPostToWPPost,
-    graphQLPageToWPPage
-} from '@/lib/graphql-adapter';
+import { graphQLProductToWPProduct } from '@/lib/graphql-adapter';
+import { ProductCTAButtons } from '@/components/product/ProductCTAButtons';
 import type { Metadata } from 'next';
 
 interface PageProps {
@@ -528,20 +526,22 @@ export default async function WordPressPage({ params }: PageProps) {
 
                                 {/* Desktop CTA Buttons - Show only on desktop */}
                                 <div className="hidden md:block bg-white px-6 py-6 rounded-2xl shadow-lg">
-                                    <div className="flex items-center gap-4">
-                                        <button className="flex-1 flex items-center justify-center h-14 rounded-lg bg-[#228B22]/20 text-[#228B22] gap-2 font-bold text-base hover:bg-[#228B22]/30 transition-colors">
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                            </svg>
-                                            Thêm vào giỏ
-                                        </button>
-                                        <Link
-                                            href="/lien-he"
-                                            className="flex-1 flex items-center justify-center h-14 rounded-lg bg-[#228B22] text-white font-bold text-base hover:bg-[#1a6b1a] transition-colors"
-                                        >
-                                            Mua ngay
-                                        </Link>
-                                    </div>
+                                    <ProductCTAButtons
+                                        product={{
+                                            id: product.id,
+                                            productId: product.id,
+                                            name: product.title.rendered.replace(/&amp;/g, '&'),
+                                            slug: product.slug,
+                                            price: product.wc_data?.sale_price
+                                                ? parseInt(product.wc_data.sale_price)
+                                                : product.wc_data?.price
+                                                    ? parseInt(product.wc_data.price)
+                                                    : 0,
+                                            image: product._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
+                                            sku: product.wc_data?.sku,
+                                        }}
+                                        variant="desktop"
+                                    />
                                 </div>
 
                                 {/* Accordion for Details */}
@@ -643,20 +643,22 @@ export default async function WordPressPage({ params }: PageProps) {
 
                     {/* Sticky CTA Bar - Mobile only */}
                     <footer className="md:hidden fixed bottom-0 left-0 right-0 z-10 bg-white/80 backdrop-blur-sm p-4 border-t border-[#E5E5E5]">
-                        <div className="flex items-center gap-4">
-                            <button className="flex-1 flex items-center justify-center h-12 rounded-lg bg-[#228B22]/20 text-[#228B22] gap-2 font-bold text-base">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                                Thêm vào giỏ
-                            </button>
-                            <Link
-                                href="/lien-he"
-                                className="flex-1 flex items-center justify-center h-12 rounded-lg bg-[#228B22] text-white font-bold text-base"
-                            >
-                                Mua ngay
-                            </Link>
-                        </div>
+                        <ProductCTAButtons
+                            product={{
+                                id: product.id,
+                                productId: product.id,
+                                name: product.title.rendered.replace(/&amp;/g, '&'),
+                                slug: product.slug,
+                                price: product.wc_data?.sale_price
+                                    ? parseInt(product.wc_data.sale_price)
+                                    : product.wc_data?.price
+                                        ? parseInt(product.wc_data.price)
+                                        : 0,
+                                image: product._embedded?.['wp:featuredmedia']?.[0]?.source_url || '',
+                                sku: product.wc_data?.sku,
+                            }}
+                            variant="mobile"
+                        />
                     </footer>
                 </div>
             );

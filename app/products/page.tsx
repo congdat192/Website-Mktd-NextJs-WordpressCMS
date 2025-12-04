@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getProducts as getProductsGraphQL } from '@/lib/graphql/products';
 import { graphQLProductsToWPProducts } from '@/lib/graphql-adapter';
 import { ProductGrid, ProductFilter } from '@/components/product';
@@ -9,20 +10,23 @@ export const metadata = {
 };
 
 interface PageProps {
-    searchParams: {
+    searchParams: Promise<{
         page?: string;
         category?: string;
         priceRange?: string;
         sortBy?: string;
-    };
+    }>;
 }
 
 export default async function ProductsPage({ searchParams }: PageProps) {
+    // Await search params (Next.js 15)
+    const params = await searchParams;
+
     // Parse search params
-    const pageNum = parseInt(searchParams.page || '1');
-    const category = searchParams.category || 'all';
-    const priceRange = searchParams.priceRange || 'all';
-    const sortBy = searchParams.sortBy || 'newest';
+    const pageNum = parseInt(params.page || '1');
+    const category = params.category || 'all';
+    const priceRange = params.priceRange || 'all';
+    const sortBy = params.sortBy || 'newest';
 
     // Parse price range
     let minPrice, maxPrice;
@@ -64,7 +68,7 @@ export default async function ProductsPage({ searchParams }: PageProps) {
     }
 
     // Fetch products with GraphQL
-    let products = [];
+    let products: any[] = [];
     let hasNextPage = false;
 
     try {

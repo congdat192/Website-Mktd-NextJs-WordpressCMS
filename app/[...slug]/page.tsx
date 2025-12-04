@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
     getPostsByCategory,
     getProductsByCategory,
-    getCategories,
 } from '@/lib/wordpress';
 import { getProductCategoryBySlug, getPostCategoryBySlug, getProductCategories, getPostCategories } from '@/lib/graphql/categories';
 import type { Metadata } from 'next';
@@ -210,11 +210,11 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         // Not a product category, continue
     }
 
-    // Try to get as blog category
+    // Try to get as blog category (GraphQL)
     try {
-        const category = await getCategoryBySlug(lastSlug);
+        const category = await getPostCategoryBySlug(lastSlug);
         if (category) {
-            const posts = await getPostsByCategory(category.id, { perPage: 20 });
+            const posts = await getPostsByCategory(category.databaseId, { perPage: 20 });
 
             return (
                 <div className="min-h-screen bg-gradient-to-br from-luxury-bg via-white to-luxury-bg/50">

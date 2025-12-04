@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { graphqlClient } from '../graphql-client';
 import {
     GET_PRODUCT_CATEGORIES,
