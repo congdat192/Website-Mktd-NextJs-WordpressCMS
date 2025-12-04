@@ -1,20 +1,24 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import {
-    getPageBySlug,
-    getPages,
-    getPostBySlug,
-    getPosts,
-    getCategoryBySlug,
-    getProductCategoryBySlug,
     getPostsByCategory,
     getProductsByCategory,
     WPProduct,
-    getCategories,
-    getProductCategories,
 } from '@/lib/wordpress';
 import { getProductBySlug, getProducts } from '@/lib/graphql/products';
-import { graphQLProductToWPProduct } from '@/lib/graphql-adapter';
+import { getPostBySlug, getPosts } from '@/lib/graphql/posts';
+import { getPageBySlug, getPages } from '@/lib/graphql/pages';
+import {
+    getProductCategoryBySlug,
+    getPostCategoryBySlug,
+    getProductCategories,
+    getPostCategories
+} from '@/lib/graphql/categories';
+import {
+    graphQLProductToWPProduct,
+    graphQLPostToWPPost,
+    graphQLPageToWPPage
+} from '@/lib/graphql-adapter';
 import type { Metadata } from 'next';
 
 interface PageProps {
@@ -27,75 +31,77 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { slug } = await params;
 
-    // Try to get as product category first (most likely for single slug)
+    // Try to get as product category first (GraphQL)
     try {
         const category = await getProductCategoryBySlug(slug);
         if (category) {
             return {
-                title: category.yoast_head_json?.title || `${category.name} - Mắt Kính Tâm Đức`,
-                description: category.yoast_head_json?.description || category.description || `Khám phá ${category.name}`,
+                title: `${category.name} - Mắt Kính Tâm Đức`,
+                description: category.description || `Khám phá ${category.name}`,
             };
         }
     } catch {
         // Not a product category
     }
 
-    // Try to get as blog category
+    // Try to get as blog category (GraphQL)
     try {
-        const category = await getCategoryBySlug(slug);
+        const category = await getPostCategoryBySlug(slug);
         if (category) {
             return {
-                title: category.yoast_head_json?.title || `${category.name} - Mắt Kính Tâm Đức`,
-                description: category.yoast_head_json?.description || category.description || `Tin tức ${category.name}`,
+                title: `${category.name} - Mắt Kính Tâm Đức`,
+                description: category.description || `Tin tức ${category.name}`,
             };
         }
     } catch {
         // Not a blog category
     }
 
-    // Try to get as blog post
+    // Try to get as blog post (GraphQL)
     try {
-        const post = await getPostBySlug(slug);
-        if (post) {
-            const description = post.excerpt.rendered
-                .replace(/<[^>]*>/g, '')
-                .substring(0, 160);
+        const graphQLPost = await getPostBySlug(slug);
+        if (graphQLPost) {
+            // Extract plain text from excerpt
+            const tempDiv = graphQLPost.excerpt?.replace(/<[^>]*>/g, '') || '';
+            const description = tempDiv.substring(0, 160);
             return {
-                title: post.yoast_head_json?.title || `${post.title.rendered} - Mắt Kính Tâm Đức`,
-                description: post.yoast_head_json?.description || description,
+                title: `${graphQLPost.title} - Mắt Kính Tâm Đức`,
+                description: description || graphQLPost.title,
             };
         }
     } catch {
         // Not a blog post
     }
 
-    // Try to get as product
+    // Try to get as product (GraphQL)
     try {
         const product = await getProductBySlug(slug);
         if (product) {
-            const description = product.excerpt.rendered
-                .replace(/<[^>]*>/g, '')
-                .substring(0, 160);
+            const description = product.shortDescription?.replace(/<[^>]*>/g, '').substring(0, 160) || '';
             return {
-                title: product.yoast_head_json?.title || `${product.title.rendered} - Mắt Kính Tâm Đức`,
-                description: product.yoast_head_json?.description || description,
+                title: `${product.name} - Mắt Kính Tâm Đức`,
+                description: description || product.name,
             };
         }
     } catch {
         // Not a product
     }
 
-    // Try to get as page
-    const page = await getPageBySlug(slug);
-    if (!page) {
-        return {
-            title: 'Không tìm thấy trang',
-        };
+    // Try to get as page (GraphQL)
+    try {
+        const graphQLPage = await getPageBySlug(slug);
+        if (graphQLPage) {
+            return {
+                title: `${graphQLPage.title} - Mắt Kính Tâm Đức`,
+                description: graphQLPage.title,
+            };
+        }
+    } catch {
+        // Not a page
     }
 
     return {
-        title: `${page.title.rendered} - Mắt Kính Tâm Đức`,
-        description: page.title.rendered,
+        title: 'Không tìm thấy trang - Mắt Kính Tâm Đức',
     };
 }
 
@@ -104,31 +110,32 @@ export async function generateStaticParams() {
     const slugs: { slug: string }[] = [];
 
     try {
-        // Get all product categories (single level only)
+        // Get all product categories (GraphQL - single level only)
         const productCategories = await getProductCategories();
-        slugs.push(...productCategories.filter(c => !c.parent).map((cat) => ({ slug: cat.slug })));
+        slugs.push(...productCategories.filter((c: any) => !c.parent).map((cat: any) => ({ slug: cat.slug })));
     } catch (error) {
         console.error('Failed to generate static params for product categories:', error);
     }
 
     try {
-        // Get all blog categories (single level only)
-        const categories = await getCategories();
-        slugs.push(...categories.filter(c => !c.parent).map((cat) => ({ slug: cat.slug })));
+        // Get all blog categories (GraphQL - single level only)
+        const categories = await getPostCategories();
+        slugs.push(...categories.filter((c: any) => !c.parent).map((cat: any) => ({ slug: cat.slug })));
     } catch (error) {
         console.error('Failed to generate static params for categories:', error);
     }
 
     try {
-        // Get all blog posts
-        const posts = await getPosts({ perPage: 100 });
-        slugs.push(...posts.map((post) => ({ slug: post.slug })));
+        // Get all blog posts (GraphQL)
+        const postsResult = await getPosts({ first: 100 });
+        const posts = postsResult.nodes || [];
+        slugs.push(...posts.map((post: any) => ({ slug: post.slug })));
     } catch (error) {
         console.error('Failed to generate static params for posts:', error);
     }
 
     try {
-        // Get all products (GraphQL returns edges structure)
+        // Get all products (GraphQL)
         const productsResult = await getProducts({ first: 100 });
         const products = productsResult.edges.map((edge: any) => edge.node);
         slugs.push(...products.map((product: any) => ({ slug: product.slug })));
@@ -137,9 +144,10 @@ export async function generateStaticParams() {
     }
 
     try {
-        // Get all pages
-        const pages = await getPages();
-        slugs.push(...pages.map((page) => ({ slug: page.slug })));
+        // Get all pages (GraphQL)
+        const pagesResult = await getPages();
+        const pages = pagesResult.nodes || [];
+        slugs.push(...pages.map((page: any) => ({ slug: page.slug })));
     } catch (error) {
         console.error('Failed to generate static params for pages:', error);
     }
@@ -150,11 +158,11 @@ export async function generateStaticParams() {
 export default async function WordPressPage({ params }: PageProps) {
     const { slug } = await params;
 
-    // Try to get as product category first
+    // Try to get as product category first (GraphQL)
     try {
         const category = await getProductCategoryBySlug(slug);
         if (category) {
-            const products = await getProductsByCategory(category.id, { perPage: 24 });
+            const products = await getProductsByCategory(category.databaseId, { perPage: 24 });
 
             return (
                 <div className="container mx-auto px-4 py-12">
@@ -214,11 +222,11 @@ export default async function WordPressPage({ params }: PageProps) {
         // Not a product category
     }
 
-    // Try to get as blog category
+    // Try to get as blog category (GraphQL)
     try {
-        const category = await getCategoryBySlug(slug);
+        const category = await getPostCategoryBySlug(slug);
         if (category) {
-            const posts = await getPostsByCategory(category.id, { perPage: 20 });
+            const posts = await getPostsByCategory(category.databaseId, { perPage: 20 });
 
             return (
                 <div className="container mx-auto px-4 py-12">
@@ -290,33 +298,33 @@ export default async function WordPressPage({ params }: PageProps) {
         // Not a blog category
     }
 
-    // Try to get as blog post
+    // Try to get as blog post (GraphQL)
     try {
-        const post = await getPostBySlug(slug);
-        if (post) {
+        const graphQLPost = await getPostBySlug(slug);
+        if (graphQLPost) {
             return (
                 <article className="container mx-auto px-4 py-12">
                     <div className="max-w-3xl mx-auto">
                         {/* Post Header */}
                         <header className="mb-8">
                             <time className="text-sm text-gray-500">
-                                {new Date(post.date).toLocaleDateString('vi-VN', {
+                                {new Date(graphQLPost.date).toLocaleDateString('vi-VN', {
                                     year: 'numeric',
                                     month: 'long',
                                     day: 'numeric',
                                 })}
                             </time>
                             <h1 className="text-4xl font-bold mt-2 mb-6">
-                                {post.title.rendered}
+                                {graphQLPost.title}
                             </h1>
                         </header>
 
                         {/* Featured Image */}
-                        {post._embedded?.['wp:featuredmedia']?.[0]?.source_url && (
+                        {graphQLPost.featuredImage?.node?.sourceUrl && (
                             <div className="mb-8 rounded-lg overflow-hidden">
                                 <img
-                                    src={post._embedded['wp:featuredmedia'][0].source_url}
-                                    alt={post._embedded['wp:featuredmedia'][0].alt_text || post.title.rendered}
+                                    src={graphQLPost.featuredImage.node.sourceUrl}
+                                    alt={graphQLPost.featuredImage.node.altText || graphQLPost.title}
                                     className="w-full h-auto"
                                 />
                             </div>
@@ -325,7 +333,7 @@ export default async function WordPressPage({ params }: PageProps) {
                         {/* Post Content */}
                         <div
                             className="wp-content prose prose-lg max-w-none"
-                            dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+                            dangerouslySetInnerHTML={{ __html: graphQLPost.content }}
                         />
 
                         {/* Back to Blog Link */}
@@ -657,10 +665,10 @@ export default async function WordPressPage({ params }: PageProps) {
         // Not a product, continue
     }
 
-    // Try to get as page
-    const page = await getPageBySlug(slug);
+    // Try to get as page (GraphQL)
+    const graphQLPage = await getPageBySlug(slug);
 
-    if (!page) {
+    if (!graphQLPage) {
         notFound();
     }
 
@@ -670,14 +678,14 @@ export default async function WordPressPage({ params }: PageProps) {
                 {/* Page Header */}
                 <header className="mb-8">
                     <h1 className="text-4xl font-bold">
-                        {page.title.rendered}
+                        {graphQLPage.title}
                     </h1>
                 </header>
 
                 {/* Page Content */}
                 <div
                     className="wp-content prose prose-lg max-w-none"
-                    dangerouslySetInnerHTML={{ __html: page.content.rendered }}
+                    dangerouslySetInnerHTML={{ __html: graphQLPage.content }}
                 />
             </div>
         </div>
