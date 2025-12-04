@@ -1,45 +1,63 @@
-# WordPress + Next.js Headless CMS
+# WordPress + Next.js Headless E-commerce
 
-A modern, headless WordPress frontend built with Next.js 15, featuring WooCommerce integration for e-commerce functionality.
+A modern, headless WordPress e-commerce frontend built with Next.js 15, featuring full WPGraphQL integration and WooCommerce shopping cart/checkout functionality.
+
+## 🎯 Project Status
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| Phase 1 | GraphQL Migration | ✅ Complete |
+| Phase 2 | Cart & Checkout | ✅ Complete |
+| Phase 3 | User Authentication | ⏳ Upcoming |
+| Phase 4 | SEO & Performance | ⏳ Planned |
+| Phase 5 | Search & Filters | ⏳ Planned |
+| Phase 6 | Production Launch | ⏳ Planned |
 
 ## 🚀 Features
 
-- **Headless WordPress CMS**: Decoupled frontend using WordPress REST API & GraphQL
-- **WooCommerce Integration**: Full e-commerce support with real product data
-- **GraphQL API**: Modern data fetching with WPGraphQL (products page migrated)
-- **Modern UI/UX**: Responsive, mobile-first design with Tailwind CSS
-- **SEO Optimized**: Built-in SEO support with Yoast integration
-- **Server-Side Rendering**: Fast page loads with Next.js SSR
-- **TypeScript**: Type-safe development experience
-- **Product Filtering & Sorting**: Server-side URL params for SEO-friendly filtering
-- **Product Detail Pages**: Beautiful, responsive product pages with:
+### ✅ Implemented
+- **100% GraphQL Data Fetching**: All pages use WPGraphQL for optimal performance
+- **Full E-commerce Flow**: Cart → Checkout → Order → Confirmation
+- **Shopping Cart**: Zustand-powered with localStorage persistence
+- **Multi-step Checkout**: Customer info, shipping, payment selection
+- **WooCommerce Orders**: Real order creation via WooCommerce REST API
+- **Product Pages**: Beautiful, responsive product details with:
   - Dynamic pricing (regular/sale)
   - Product attributes and variants
   - Star ratings and reviews
   - Related products
-  - Sticky CTA on mobile, inline on desktop
+  - Add to cart with toast notifications
+- **Blog System**: Posts, categories, and archives
+- **Responsive Design**: Mobile-first with sticky CTAs
+- **TypeScript**: Full type safety
+
+### ⏳ Coming Soon
+- User authentication (login/register)
+- Order history
+- Product search
+- Advanced filters
+- Wishlist/favorites
 
 ## 🛠️ Tech Stack
 
 - **Framework**: Next.js 15.5.7 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
+- **State Management**: Zustand
 - **CMS**: WordPress (Headless)
 - **APIs**: 
-  - WPGraphQL (products)
-  - WordPress REST API (posts, pages)
-  - WooCommerce REST API v3
-- **State Management**: Zustand
+  - WPGraphQL (products, posts, pages, categories)
+  - WooCommerce REST API v3 (orders)
 - **Deployment**: Vercel
 
 ## 📋 Prerequisites
 
-- Node.js 18+ 
-- npm or yarn
+- Node.js 18+
 - WordPress site with:
+  - WPGraphQL plugin
+  - WPGraphQL for WooCommerce plugin
+  - WooCommerce plugin
   - REST API enabled
-  - WooCommerce plugin installed
-  - WooCommerce REST API credentials
 
 ## 🔧 Installation
 
@@ -56,166 +74,145 @@ A modern, headless WordPress frontend built with Next.js 15, featuring WooCommer
 
 3. **Configure environment variables**
    
-   Create a `.env.local` file in the root directory:
+   Create a `.env.local` file:
    ```env
-   # WordPress API
-   NEXT_PUBLIC_WP_API_URL=https://your-wordpress-site.com/wp-json
-   
-   # GraphQL API (WPGraphQL plugin required)
+   # GraphQL API (Primary)
    NEXT_PUBLIC_GRAPHQL_URL=https://your-wordpress-site.com/graphql
    
-   # WooCommerce API
+   # WordPress REST API
+   NEXT_PUBLIC_WP_API_URL=https://your-wordpress-site.com/wp-json
    WP_SITE_URL=https://your-wordpress-site.com
+   
+   # WooCommerce API (for orders)
    WC_CONSUMER_KEY=ck_your_consumer_key
    WC_CONSUMER_SECRET=cs_your_consumer_secret
    ```
-   
-   **WordPress Plugins Required:**
-   - WPGraphQL
-   - WPGraphQL for WooCommerce
 
 4. **Run development server**
    ```bash
    npm run dev
    ```
 
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
+   Open [http://localhost:3000](http://localhost:3000)
+
+## 📁 Project Structure
+
+```
+├── app/
+│   ├── [slug]/              # Dynamic routes (products/posts/pages)
+│   ├── [...slug]/           # Category routes
+│   ├── blog/                # Blog listing
+│   ├── products/            # Products with filters
+│   ├── cart/                # Shopping cart
+│   ├── checkout/            # Multi-step checkout
+│   ├── order-confirmation/  # Order success
+│   ├── api/orders/          # Orders API route
+│   └── layout.tsx           # Root layout
+├── components/
+│   ├── cart/                # Cart components
+│   ├── product/             # Product components
+│   ├── ui/                  # UI components
+│   └── Header.tsx           # Navigation with cart
+├── hooks/
+│   ├── useCart.ts           # Cart hook
+│   └── useToast.ts          # Toast notifications
+├── store/
+│   └── cartStore.ts         # Zustand cart store
+├── lib/
+│   ├── graphql/             # GraphQL operations
+│   ├── graphql-client.ts    # GraphQL client
+│   ├── graphql-adapter.ts   # Data adapters
+│   └── wordpress.ts         # Legacy REST functions
+└── public/
+```
+
+## 🛒 E-commerce Flow
+
+```
+Product Page → "Thêm vào giỏ" → Cart updates + Toast
+                    ↓
+              Cart Drawer/Page
+                    ↓
+              Checkout (3 steps)
+                    ↓
+         WooCommerce Order Created
+                    ↓
+           Order Confirmation Page
+```
 
 ## 🌐 Deployment
 
 ### Vercel (Recommended)
 
-1. Push your code to GitHub
-2. Import project to Vercel
-3. Add environment variables in Vercel dashboard:
+1. Push to GitHub
+2. Import to Vercel
+3. Add environment variables:
+   - `NEXT_PUBLIC_GRAPHQL_URL`
    - `NEXT_PUBLIC_WP_API_URL`
    - `WP_SITE_URL`
    - `WC_CONSUMER_KEY`
    - `WC_CONSUMER_SECRET`
 4. Deploy!
 
-## 📁 Project Structure
-
-```
-├── app/                    # Next.js App Router
-│   ├── [slug]/            # Dynamic routes (posts, pages, products)
-│   ├── [...slug]/         # Catch-all routes (categories)
-│   ├── blog/              # Blog listing page
-│   ├── products/          # Products listing page
-│   └── layout.tsx         # Root layout
-├── components/            # React components
-│   ├── Footer.tsx
-│   └── Header.tsx
-├── lib/                   # Utility functions
-│   └── wordpress.ts       # WordPress & WooCommerce API client
-├── public/               # Static assets
-└── .env.local           # Environment variables (not in git)
-```
-
-## 🔌 API Integration
-
-### WordPress REST API
-
-Fetches posts, pages, and product metadata:
-```typescript
-// Example: Fetch product by slug
-const product = await getProductBySlug('product-slug');
-```
-
-### WooCommerce REST API
-
-Fetches product pricing, attributes, and inventory:
-```typescript
-// Example: Fetch WooCommerce data
-const wcData = await getWooCommerceProduct('product-slug');
-```
-
-## 🎨 Key Features
-
-### Product Detail Page
-
-- **Responsive Design**: 
-  - Mobile: Stacked layout with sticky CTA bar
-  - Desktop: 2-column layout with sticky image
-- **Dynamic Data**:
-  - Real-time pricing from WooCommerce
-  - Product attributes (color, size, etc.)
-  - Star ratings and review count
-  - Stock status
-- **Related Products**: Auto-fetched from same category
-- **SEO**: Meta tags from Yoast SEO
-
-### Blog & Pages
-
-- Dynamic routing for posts and pages
-- Category archives
-- Embedded media support
-- Yoast SEO integration
-
 ## 🔐 Environment Variables
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `NEXT_PUBLIC_WP_API_URL` | WordPress REST API endpoint | Yes |
+| `NEXT_PUBLIC_GRAPHQL_URL` | WPGraphQL endpoint | Yes |
+| `NEXT_PUBLIC_WP_API_URL` | WordPress REST API | Yes |
 | `WP_SITE_URL` | WordPress site URL | Yes |
-| `WC_CONSUMER_KEY` | WooCommerce API consumer key | Yes |
-| `WC_CONSUMER_SECRET` | WooCommerce API consumer secret | Yes |
+| `WC_CONSUMER_KEY` | WooCommerce API key | Yes |
+| `WC_CONSUMER_SECRET` | WooCommerce API secret | Yes |
 
-## � Troubleshooting
+## 🐛 Troubleshooting
 
 ### Build Errors
+- Check all imports are correct
+- Verify environment variables
+- Run `npm run build` locally first
 
-- **TypeScript errors**: Ensure all imports are correct
-- **Missing environment variables**: Check `.env.local` file
-- **API connection issues**: Verify WordPress/WooCommerce API credentials
+### Cart Issues
+- Clear localStorage and refresh
+- Check browser console for errors
 
-### Common Issues
+### Orders Not Creating
+- Verify WooCommerce API credentials
+- Check server logs
+- Ensure products exist in WooCommerce
 
-1. **Images not loading**: Check WordPress media URLs
-2. **Products not displaying**: Verify WooCommerce API credentials
-3. **404 errors**: Ensure WordPress permalinks are set to "Post name"
+### GraphQL Errors
+- Verify WPGraphQL plugins are active
+- Check GraphQL endpoint accessibility
+- Test queries in GraphiQL IDE
 
 ## 📝 Development
 
-### Adding New Features
-
+### Adding Features
 1. Create components in `components/`
-2. Add API functions in `lib/wordpress.ts`
-3. Create pages in `app/`
-4. Update TypeScript interfaces as needed
+2. Add GraphQL queries in `lib/graphql/queries/`
+3. Create API functions in `lib/graphql/`
+4. Build pages in `app/`
 
 ### Code Style
+- TypeScript for type safety
+- Next.js App Router conventions
+- Tailwind CSS for styling
+- Zustand for client state
 
-- Use TypeScript for type safety
-- Follow Next.js App Router conventions
-- Use Tailwind CSS for styling
-- Keep components small and reusable
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
-## 📄 License
-
-This project is private and proprietary.
-
-## � Author
+## 👤 Author
 
 **Cong Dat**
 - GitHub: [@congdat192](https://github.com/congdat192)
 
 ## 🙏 Acknowledgments
 
-- Next.js team for the amazing framework
-- WordPress & WooCommerce for the CMS/e-commerce platform
-- Vercel for hosting and deployment
+- Next.js team
+- WordPress & WooCommerce
+- WPGraphQL community
+- Vercel
 
 ---
 
-**Live Site**: [Your deployed URL]
+**Live Site**: https://matkinhtamduc.com
 
-**WordPress Admin**: [Your WordPress admin URL]
+**Last Updated**: December 4, 2024

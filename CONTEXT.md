@@ -4,34 +4,47 @@
 
 This is a headless WordPress frontend application built with Next.js 15, designed for **Mắt Kính Tâm Đức** (matkinhtamduc.com) - an eyewear e-commerce website. The project decouples the frontend from WordPress, using it purely as a headless CMS and WooCommerce for product management.
 
+## Migration Status (Updated Dec 2024)
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| Phase 1 | GraphQL Migration | ✅ **DONE** |
+| Phase 2 | Cart & Checkout | ✅ **DONE** |
+| Phase 3 | User Authentication | ⏳ Pending |
+| Phase 4 | SEO & Performance | ⏳ Pending |
+| Phase 5 | Search & Filters | ⏳ Pending |
+| Phase 6 | Production Launch | ⏳ Pending |
+
 ## Architecture
 
 ### Frontend
 - **Framework**: Next.js 15.5.7 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
+- **State Management**: Zustand (Cart)
 - **Deployment**: Vercel
 
 ### Backend
 - **CMS**: WordPress (Headless)
 - **E-commerce**: WooCommerce
 - **APIs**: 
-  - **WPGraphQL** (products - migrated)
-  - WordPress REST API (posts, pages)
-  - WooCommerce REST API v3
+  - **WPGraphQL** (Primary - products, posts, pages, categories)
+  - WooCommerce REST API v3 (orders, cart operations)
 
 ### Data Flow
 ```
 WordPress/WooCommerce (Backend)
-    ↓ (GraphQL + REST API)
-Next.js Server (SSR)
-    ↓ (HTML)
+    ↓ (WPGraphQL)
+Next.js Server (SSR/SSG)
+    ↓ (HTML + React)
 User Browser
+    ↓ (Zustand Cart State)
+WooCommerce Orders API
 ```
 
 ## Key Integrations
 
-### 1. WPGraphQL (Primary for Products)
+### 1. WPGraphQL (Primary API - 100% Migrated)
 **Endpoint**: `/graphql`
 
 **WordPress Plugins Required**:
@@ -39,236 +52,220 @@ User Browser
 - WPGraphQL for WooCommerce
 
 **Used for**:
-- Products listing (`/products` page)
-- Product filtering & sorting
-- Product categories
-
-**Benefits**:
-- Fetch only needed fields
-- Single request for related data
-- Better performance
-- Type-safe with TypeScript
+- ✅ Products listing & details
+- ✅ Posts & Blog
+- ✅ Pages
+- ✅ Product Categories
+- ✅ Post Categories
+- ✅ Static params generation
 
 **Files**:
-- `lib/graphql-client.ts` - GraphQL client
-- `lib/graphql/queries/products.ts` - Product queries
-- `lib/graphql/products.ts` - GraphQL functions
-- `lib/graphql-adapter.ts` - Convert GraphQL → REST API format
+- `lib/graphql-client.ts` - GraphQL client setup
+- `lib/graphql/queries/` - GraphQL query definitions
+- `lib/graphql/products.ts` - Product operations
+- `lib/graphql/posts.ts` - Blog post operations
+- `lib/graphql/pages.ts` - Page operations
+- `lib/graphql/categories.ts` - Category operations
+- `lib/graphql-adapter.ts` - Convert GraphQL → WP format for compatibility
 
-### 2. WordPress REST API
-**Endpoint**: `/wp-json/wp/v2/`
-
-**Used for**:
-- Posts (`/posts`)
-- Pages (`/pages`)
-- Categories (`/categories`, `/product_cat`)
-- Media (`/media`)
-
-**Features**:
-- Embedded responses (`?_embed`)
-- Yoast SEO metadata
-- Custom post types
-
-### 3. WooCommerce REST API v3
+### 2. WooCommerce REST API v3
 **Endpoint**: `/wp-json/wc/v3/`
 
 **Authentication**: Basic Auth (Consumer Key + Secret)
 
 **Used for**:
-- Product details (fallback)
-- Pricing (regular, sale)
-- Attributes (color, size, brand, etc.)
-- Variations
-- Stock status
-- Ratings and reviews
+- ✅ Creating orders (`POST /orders`)
+- ✅ Order retrieval (`GET /orders`)
+- Products by category (legacy, for category pages)
+
+### 3. Cart System (Zustand)
+**Client-side state management with localStorage persistence**
+
+**Features**:
+- Add/remove items
+- Update quantities
+- Persist across sessions
+- Cart drawer & page
+
+**Files**:
+- `store/cartStore.ts` - Zustand store
+- `hooks/useCart.ts` - Cart hook
+- `components/cart/` - Cart components
 
 ## Project Structure
 
 ```
 wordpress-nextjs-frontend/
 ├── app/                          # Next.js App Router
-│   ├── [slug]/                  # Dynamic single routes
-│   │   ├── page.tsx            # Main handler (posts/pages/products)
-│   │   ├── not-found.tsx       # 404 page
-│   │   └── styles.css          # Page-specific styles
-│   ├── [...slug]/              # Catch-all routes (categories)
-│   │   └── page.tsx
-│   ├── blog/                   # Blog listing
-│   ├── products/               # Products listing
-│   ├── layout.tsx              # Root layout
-│   ├── page.tsx                # Homepage
-│   └── globals.css             # Global styles
-├── components/                  # React components
-│   ├── Header.tsx
-│   └── Footer.tsx
-├── lib/                        # Utilities
-│   └── wordpress.ts            # API client & types
-├── public/                     # Static files
-├── .env.local                  # Environment variables (gitignored)
-└── next.config.ts              # Next.js configuration
+│   ├── [slug]/                  # Dynamic routes (posts/pages/products)
+│   ├── [...slug]/               # Catch-all routes (nested categories)
+│   ├── blog/                    # Blog listing
+│   ├── products/                # Products listing with filters
+│   ├── cart/                    # Cart page ✨ NEW
+│   ├── checkout/                # Checkout page ✨ NEW
+│   ├── order-confirmation/      # Order success page ✨ NEW
+│   ├── api/
+│   │   └── orders/              # Orders API route ✨ NEW
+│   ├── layout.tsx               # Root layout (with ToastProvider)
+│   └── page.tsx                 # Homepage
+├── components/
+│   ├── cart/                    # Cart components
+│   │   ├── CartDrawer.tsx
+│   │   ├── CartItem.tsx
+│   │   └── CartSummary.tsx
+│   ├── product/                 # Product components
+│   │   ├── ProductCard.tsx
+│   │   ├── ProductGrid.tsx
+│   │   ├── ProductCTAButtons.tsx  # Add to cart ✨ NEW
+│   │   └── ProductActions.tsx     # Full actions ✨ NEW
+│   ├── ui/                      # UI components
+│   │   ├── Button.tsx
+│   │   ├── Card.tsx
+│   │   └── Toast.tsx
+│   ├── layout/
+│   └── Header.tsx               # With cart icon & badge
+├── hooks/
+│   ├── useCart.ts
+│   └── useToast.ts              # ✨ NEW
+├── store/
+│   └── cartStore.ts             # Zustand cart store
+├── lib/
+│   ├── graphql-client.ts        # GraphQL client
+│   ├── graphql/                 # GraphQL operations
+│   │   ├── queries/
+│   │   ├── products.ts
+│   │   ├── posts.ts
+│   │   ├── pages.ts
+│   │   └── categories.ts
+│   ├── graphql-adapter.ts       # Data adapters
+│   ├── wordpress.ts             # Legacy REST API (some functions)
+│   └── utils.ts                 # Utilities (formatPrice, etc.)
+└── public/
+```
+
+## E-Commerce Flow
+
+### Cart to Checkout Flow
+```
+Product Page
+    → Click "Thêm vào giỏ"
+    → Zustand adds to cart + localStorage
+    → Toast notification
+    → Header cart badge updates
+    
+Cart Drawer / Page
+    → View cart items
+    → Adjust quantities
+    → Click "Thanh toán"
+    
+Checkout Page (3 steps)
+    1. Customer Info (name, email, phone)
+    2. Shipping Address
+    3. Payment Method (COD / Bank Transfer)
+    → Submit → POST /api/orders
+    
+Order Confirmation
+    → Show order details
+    → Clear cart
+    → Thank you message
 ```
 
 ## Data Models
 
-### WPProduct (WordPress)
+### GraphQL Product
 ```typescript
 {
-  id: number;
+  id: string;
+  databaseId: number;
+  name: string;
   slug: string;
-  title: { rendered: string };
-  content: { rendered: string };
-  excerpt: { rendered: string };
-  featured_media: number;
-  product_cat: number[];
-  _embedded: {
-    'wp:featuredmedia': [...];
-    'wp:term': [...];
-  };
-  wc_data?: WCProduct;  // Merged WooCommerce data
+  price: string;           // Formatted: "100.000 ₫"
+  regularPrice: string;
+  salePrice: string;
+  onSale: boolean;
+  stockStatus: 'IN_STOCK' | 'OUT_OF_STOCK';
+  shortDescription: string;
+  description: string;
+  image: { sourceUrl, altText };
+  productCategories: { nodes: [...] };
 }
 ```
 
-### WCProduct (WooCommerce)
+### Cart Item (Zustand)
 ```typescript
 {
   id: number;
+  productId: number;
   name: string;
-  sku: string;
-  price: string;
-  regular_price: string;
-  sale_price: string;
-  on_sale: boolean;
-  stock_status: 'instock' | 'outofstock' | 'onbackorder';
-  attributes: WCProductAttribute[];
-  average_rating: string;
-  rating_count: number;
+  slug: string;
+  price: number;
+  quantity: number;
+  image: string;
+  sku?: string;
+  attributes?: { color?, size?, ... };
+}
+```
+
+### WooCommerce Order
+```typescript
+{
+  payment_method: 'cod' | 'bank_transfer';
+  billing: { first_name, last_name, email, phone, address_1, city, ... };
+  shipping: { ... };
+  line_items: [{ product_id, quantity }];
+  customer_note: string;
 }
 ```
 
 ## Routing Strategy
 
-### Dynamic Routes
-- `/[slug]` - Handles posts, pages, and products
-  - Tries to fetch as post first
-  - Falls back to page
-  - Falls back to product
-  - Returns 404 if none found
+### Product/Content Routes
+- `/[slug]` - Tries: Product → Post → Page → 404
 
-### Category Routes
-- `/[...slug]` - Handles category archives
-  - Blog categories: `/category/[slug]`
-  - Product categories: `/product-category/[slug]`
+### Category Routes  
+- `/[...slug]` - Handles: Product categories, Blog categories
 
 ### Static Routes
 - `/` - Homepage
 - `/blog` - Blog listing
-- `/products` - Products listing
+- `/products` - Products with filters
+- `/cart` - Shopping cart
+- `/checkout` - Checkout process
+- `/order-confirmation` - Order success
 
 ## Design System
 
 ### Colors
 ```css
 Primary Green: #228B22
+Primary Green Hover: #1a6b1a
 Background: #F5F5F5
 Card Background: #FFFFFF
 Text Primary: #333333
 Text Muted: #666666
 Border: #E5E5E5
+Success: #228B22
+Error: #EF4444
 ```
 
-### Breakpoints
-```css
-Mobile: < 768px
-Tablet: 768px - 1024px
-Desktop: > 1024px
-Max Width: 1280px (7xl)
-```
-
-### Typography
-- Headings: Bold, tracking-tight
-- Body: Normal weight
-- Links: Hover effects with transitions
-
-## Performance Optimizations
-
-### Caching
-- **Revalidation**: 60 seconds for all API calls
-- **Build Cache**: Enabled on Vercel
-
-### Image Optimization
-- WordPress serves optimized images
-- Future: Migrate to Next.js `<Image />` component
-
-### Code Splitting
-- Automatic with Next.js App Router
-- Dynamic imports where needed
-
-## SEO Strategy
-
-### Meta Tags
-- Pulled from Yoast SEO (`yoast_head_json`)
-- Fallback to WordPress title/excerpt
-- Open Graph tags for social sharing
-
-### Structured Data
-- Product schema (future enhancement)
-- Breadcrumbs (future enhancement)
-
-### Sitemap
-- Generated from WordPress (future enhancement)
-
-## Development Workflow
-
-### Local Development
-1. Start WordPress locally or use staging
-2. Configure `.env.local`
-3. Run `npm run dev`
-4. Test on `localhost:3000`
-
-### Deployment
-1. Push to GitHub (main branch)
-2. Vercel auto-deploys
-3. Environment variables set in Vercel dashboard
-
-### Testing
-- Manual testing on localhost
-- Vercel preview deployments for PRs
-- Production testing on live site
-
-## Known Limitations
-
-1. **No Cart Functionality**: Add to cart is UI-only (not functional)
-2. **Static Attributes**: Product attributes are display-only
-3. **No User Authentication**: No login/register functionality
-4. **Image Warnings**: Using `<img>` instead of Next.js `<Image />`
-5. **No Search**: Search functionality not implemented
-
-## Future Enhancements
-
-### High Priority
-1. Implement shopping cart with WooCommerce API
-2. Add user authentication
-3. Replace `<img>` with Next.js `<Image />`
-4. Add product search functionality
-
-### Medium Priority
-5. Implement product variations
-6. Add customer reviews display
-7. Implement wishlist/favorites
-8. Add social sharing buttons
-
-### Low Priority
-9. Add product comparison
-10. Implement live chat
-11. Add newsletter signup
-12. Implement blog comments
+### Components (UI Library)
+- Button (primary, secondary, outline, ghost)
+- Card (with CardContent, CardHeader)
+- Toast (success, error, warning, info)
+- Pagination
+- Inputs (text, select, textarea)
 
 ## Environment Configuration
 
-### Required Variables
 ```env
+# GraphQL (Primary)
+NEXT_PUBLIC_GRAPHQL_URL=https://matkinhtamduc.com/graphql
+
+# REST API (Legacy & Orders)
 NEXT_PUBLIC_WP_API_URL=https://matkinhtamduc.com/wp-json
 WP_SITE_URL=https://matkinhtamduc.com
+
+# WooCommerce (Orders)
 WC_CONSUMER_KEY=ck_xxxxxxxxxxxxx
 WC_CONSUMER_SECRET=cs_xxxxxxxxxxxxx
 ```
@@ -276,52 +273,50 @@ WC_CONSUMER_SECRET=cs_xxxxxxxxxxxxx
 ### WordPress Requirements
 - WordPress 6.0+
 - WooCommerce 8.0+
-- Yoast SEO (recommended)
+- WPGraphQL plugin
+- WPGraphQL for WooCommerce plugin
 - Pretty permalinks enabled
+
+## Current Features
+
+### ✅ Completed
+1. GraphQL data fetching (100% migrated)
+2. Product listing with filters & sorting
+3. Product detail pages
+4. Blog listing & posts
+5. Static pages
+6. Category pages
+7. Shopping cart (client-side)
+8. Cart drawer & page
+9. Multi-step checkout
+10. WooCommerce order creation
+11. Order confirmation
+12. Toast notifications
+
+### ⏳ Pending
+1. User authentication (login/register)
+2. Order history (for logged-in users)
+3. SEO optimization (RankMath integration)
+4. Product search
+5. Advanced filters
+6. Wishlist
+7. Product reviews
 
 ## Troubleshooting
 
-### Common Issues
+### Cart not persisting
+- Check localStorage permissions
+- Clear localStorage and try again
 
-**Build fails with TypeScript errors**
-- Check all imports are correct
-- Ensure types are properly defined
-- Run `npm run build` locally first
-
-**Products not loading**
+### Orders failing
 - Verify WooCommerce API credentials
-- Check CORS settings on WordPress
-- Ensure products are published
+- Check server logs for errors
+- Ensure products exist in WooCommerce
 
-**Images not displaying**
-- Check WordPress media URLs
-- Verify HTTPS is used
-- Check image permissions
-
-**Slow page loads**
-- Check WordPress server performance
-- Verify caching is enabled
-- Consider CDN for WordPress
-
-## Security Considerations
-
-1. **API Keys**: Never commit to git (use `.env.local`)
-2. **CORS**: Configure WordPress to allow Next.js domain
-3. **Rate Limiting**: WooCommerce API has rate limits
-4. **HTTPS**: Always use HTTPS in production
-
-## Maintenance
-
-### Regular Tasks
-- Update dependencies monthly
-- Monitor WordPress/WooCommerce updates
-- Check Vercel deployment logs
-- Review and fix ESLint warnings
-
-### Monitoring
-- Vercel Analytics for performance
-- WordPress error logs
-- API response times
+### GraphQL errors
+- Verify WPGraphQL plugins are activated
+- Check GraphQL endpoint is accessible
+- Review query syntax
 
 ## Contact & Support
 
