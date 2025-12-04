@@ -43,13 +43,16 @@ export function ProductCard({ product }: ProductCardProps) {
                 {/* Quick View */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <div className="flex gap-2">
-                        <Link
-                            href={`/${product.slug}`}
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                window.location.href = `/${product.slug}`;
+                            }}
                             className="p-3 bg-white rounded-full hover:bg-[#228B22] hover:text-white transition"
                             aria-label="Xem chi tiết"
                         >
                             <Eye className="w-5 h-5" />
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </Link>
@@ -78,8 +81,8 @@ export function ProductCard({ product }: ProductCardProps) {
                                 <svg
                                     key={star}
                                     className={`w-4 h-4 ${star <= Math.round(parseFloat(product.wc_data!.average_rating))
-                                            ? 'text-yellow-500 fill-current'
-                                            : 'text-gray-300'
+                                        ? 'text-yellow-500 fill-current'
+                                        : 'text-gray-300'
                                         }`}
                                     viewBox="0 0 24 24"
                                 >
