@@ -2,13 +2,11 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-    getCategoryBySlug,
-    getProductCategoryBySlug,
     getPostsByCategory,
     getProductsByCategory,
     getCategories,
-    getProductCategories,
 } from '@/lib/wordpress';
+import { getProductCategoryBySlug, getPostCategoryBySlug, getProductCategories, getPostCategories } from '@/lib/graphql/categories';
 import type { Metadata } from 'next';
 
 interface CategoryPageProps {
@@ -22,26 +20,26 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     const { slug } = await params;
     const lastSlug = slug[slug.length - 1];
 
-    // Try product category first
+    // Try product category first (GraphQL)
     try {
         const category = await getProductCategoryBySlug(lastSlug);
         if (category) {
             return {
-                title: category.yoast_head_json?.title || `${category.name} - Mắt Kính Tâm Đức`,
-                description: category.yoast_head_json?.description || category.description || `Khám phá ${category.name}`,
+                title: `${category.name} - Mắt Kính Tâm Đức`,
+                description: category.description || `Khám phá ${category.name}`,
             };
         }
     } catch {
         // Not a product category
     }
 
-    // Try blog category
+    // Try blog category (GraphQL)
     try {
-        const category = await getCategoryBySlug(lastSlug);
+        const category = await getPostCategoryBySlug(lastSlug);
         if (category) {
             return {
-                title: category.yoast_head_json?.title || `${category.name} - Mắt Kính Tâm Đức`,
-                description: category.yoast_head_json?.description || category.description || `Tin tức ${category.name}`,
+                title: `${category.name} - Mắt Kính Tâm Đức`,
+                description: category.description || `Tin tức ${category.name}`,
             };
         }
     } catch {
@@ -49,7 +47,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     }
 
     return {
-        title: 'Không tìm thấy danh mục',
+        title: 'Danh mục - Mắt Kính Tâm Đức',
     };
 }
 
@@ -58,14 +56,13 @@ export async function generateStaticParams() {
     const slugs: { slug: string[] }[] = [];
 
     try {
-        // Get all product categories and create paths
+        // Get all product categories and create paths (GraphQL)
         const productCategories = await getProductCategories();
         for (const category of productCategories) {
-            // For now, only handle one level deep
-            // You can extend this to handle deeper nesting
+            // Handle parent/child relationships
             if (category.parent) {
                 // Find parent category
-                const parentCat = productCategories.find(c => c.id === category.parent);
+                const parentCat = productCategories.find((c: any) => c.databaseId === category.parent.node?.databaseId);
                 if (parentCat) {
                     slugs.push({ slug: [parentCat.slug, category.slug] });
                 }
@@ -76,11 +73,11 @@ export async function generateStaticParams() {
     }
 
     try {
-        // Get all blog categories and create paths
-        const categories = await getCategories();
+        // Get all blog categories and create paths (GraphQL)
+        const categories = await getPostCategories();
         for (const category of categories) {
             if (category.parent) {
-                const parentCat = categories.find(c => c.id === category.parent);
+                const parentCat = categories.find((c: any) => c.databaseId === category.parent.node?.databaseId);
                 if (parentCat) {
                     slugs.push({ slug: [parentCat.slug, category.slug] });
                 }
