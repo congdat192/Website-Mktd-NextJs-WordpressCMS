@@ -59,60 +59,6 @@ export default async function ProductsPage() {
                             Không thể tải sản phẩm
                         </p>
                         <p className="text-sm text-gray-600 font-sans">
-                            Vui lòng kiểm tra cấu hình WordPress API
-                        </p>
-                    </div>
-                ) : products.length === 0 ? (
-                    <div className="bg-white border border-forest-border rounded-2xl p-8 text-center">
-                        <svg className="w-16 h-16 text-forest-border mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                        </svg>
-                        <p className="text-forest-text font-sans">
-                            Chưa có sản phẩm nào.
-                        </p>
-                    </div>
-                ) : (
-                    <>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {products.map((product, index) => {
-                                const featuredMedia = product._embedded?.['wp:featuredmedia']?.[0];
-
-                                // Assign badges to some products for demo
-                                let badge: 'hot' | 'new' | 'best' | undefined;
-                                if (index === 0) badge = 'hot';
-                                if (index === 2) badge = 'new';
-                                if (index === 6) badge = 'best';
-
-                                return (
-                                    <ProductCard
-                                        key={product.id}
-                                        id={product.id}
-                                        slug={product.slug}
-                                        title={product.title.rendered}
-                                        excerpt={product.excerpt.rendered ? stripHtml(product.excerpt.rendered) : undefined}
-                                        featuredImage={featuredMedia ? {
-                                            url: featuredMedia.source_url,
-                                            alt: featuredMedia.alt_text || product.title.rendered
-                                        } : undefined}
-                                        badge={badge}
-                                    />
-                                );
-                            })}
-                        </div>
-
-                        {/* Pagination */}
-                        <div className="flex justify-center items-center gap-2 mt-12">
-                            <button
-                                className="p-2 border border-forest-border rounded-lg hover:bg-white transition-colors duration-200 cursor-pointer"
-                                aria-label="Trang trước"
-                            >
-                                <svg className="w-5 h-5 text-forest-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                </svg>
-                            </button>
-                            <button className="px-4 py-2 bg-forest-primary text-white rounded-lg font-medium cursor-pointer">
-                                1
-                            </button>
                             <button className="px-4 py-2 border border-forest-border rounded-lg hover:bg-white transition-colors duration-200 cursor-pointer">
                                 2
                             </button>
@@ -130,28 +76,28 @@ export default async function ProductsPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                 </svg>
                             </button>
-                        </div>
+                    </div>
                     </>
                 )}
-            </section>
+        </section>
 
-            {/* CTA Section */}
-            <section className="max-w-7xl mx-auto px-4 pb-16">
-                <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12 text-center">
-                    <h2 className="text-2xl md:text-3xl font-bold text-forest-text mb-4 font-heading">
-                        Không tìm thấy sản phẩm phù hợp?
-                    </h2>
-                    <p className="text-forest-text/70 mb-6 md:mb-8 font-sans max-w-2xl mx-auto">
-                        Chúng tôi luôn sẵn sàng tư vấn và giúp bạn tìm kiếm sản phẩm hoàn hảo cho không gian của bạn.
-                    </p>
-                    <button className="bg-forest-primary text-white px-6 md:px-8 py-3 rounded-xl font-semibold hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer inline-flex items-center gap-2">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        Liên hệ tư vấn
-                    </button>
-                </div>
-            </section>
+            {/* CTA Section */ }
+    <section className="max-w-7xl mx-auto px-4 pb-16">
+        <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-forest-text mb-4 font-heading">
+                Không tìm thấy sản phẩm phù hợp?
+            </h2>
+            <p className="text-forest-text/70 mb-6 md:mb-8 font-sans max-w-2xl mx-auto">
+                Chúng tôi luôn sẵn sàng tư vấn và giúp bạn tìm kiếm sản phẩm hoàn hảo cho không gian của bạn.
+            </p>
+            <button className="bg-forest-primary text-white px-6 md:px-8 py-3 rounded-xl font-semibold hover:bg-forest-primary/90 transition-colors duration-200 cursor-pointer inline-flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Liên hệ tư vấn
+            </button>
         </div>
+    </section>
+        </div >
     );
 }
