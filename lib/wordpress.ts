@@ -108,6 +108,11 @@ export interface WPPage {
 interface GetPostsOptions {
     perPage?: number;
     page?: number;
+    category?: string;      // Category slug for filtering
+    minPrice?: number;      // Minimum price filter
+    maxPrice?: number;      // Maximum price filter
+    orderBy?: 'date' | 'title' | 'price';  // Sort field
+    order?: 'asc' | 'desc'; // Sort direction
 }
 
 /**
@@ -311,13 +316,44 @@ export async function getWooCommerceProduct(slug: string): Promise<WCProduct | n
 }
 
 /**
- * Get products from WordPress REST API
+ * Get products from WordPress REST API with filtering and sorting
  */
 export async function getProducts(options: GetPostsOptions = {}): Promise<WPProduct[]> {
-    const { perPage = 12, page = 1 } = options;
+    const {
+        perPage = 12,
+        page = 1,
+        category,
+        minPrice,
+        maxPrice,
+        orderBy = 'date',
+        order = 'desc'
+    } = options;
 
     try {
-        const url = `${WP_API_URL}/wp/v2/product?per_page=${perPage}&page=${page}&_embed`;
+        // Build query params
+        const params = new URLSearchParams({
+            per_page: perPage.toString(),
+            page: page.toString(),
+            _embed: 'true',
+            orderby: orderBy,
+            order: order,
+        });
+
+        // Add category filter
+        if (category && category !== 'all') {
+            // Get category ID from slug
+            const categories = await getProductCategories();
+            const cat = categories.find(c => c.slug === category);
+            if (cat) {
+                params.append('product_cat', cat.id.toString());
+            }
+        }
+
+        // Note: WordPress REST API doesn't support min/max price natively
+        // We'll filter on client side or use WooCommerce API
+        // For now, we fetch all and filter in memory (not ideal for production)
+
+        const url = `${WP_API_URL}/wp/v2/product?${params}`;
 
         const response = await fetch(url, {
             next: { revalidate: 60 },
@@ -327,7 +363,20 @@ export async function getProducts(options: GetPostsOptions = {}): Promise<WPProd
             throw new Error(`Failed to fetch products: ${response.status} ${response.statusText}`);
         }
 
-        const products: WPProduct[] = await response.json();
+        let products: WPProduct[] = await response.json();
+
+        // Client-side price filtering (if price data available)
+        if (minPrice !== undefined || maxPrice !== undefined) {
+            products = products.filter(product => {
+                const price = product.wc_data?.price ? parseFloat(product.wc_data.price) : null;
+                if (price === null) return true; // Keep products without price
+
+                if (minPrice !== undefined && price < minPrice) return false;
+                if (maxPrice !== undefined && price > maxPrice) return false;
+                return true;
+            });
+        }
+
         return products;
     } catch (error) {
         console.error('Error fetching products:', error);

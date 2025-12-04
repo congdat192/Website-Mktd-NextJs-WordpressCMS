@@ -15,12 +15,15 @@ This is a headless WordPress frontend application built with Next.js 15, designe
 ### Backend
 - **CMS**: WordPress (Headless)
 - **E-commerce**: WooCommerce
-- **API**: WordPress REST API + WooCommerce REST API v3
+- **APIs**: 
+  - **WPGraphQL** (products - migrated)
+  - WordPress REST API (posts, pages)
+  - WooCommerce REST API v3
 
 ### Data Flow
 ```
 WordPress/WooCommerce (Backend)
-    ↓ (REST API)
+    ↓ (GraphQL + REST API)
 Next.js Server (SSR)
     ↓ (HTML)
 User Browser
@@ -28,13 +31,36 @@ User Browser
 
 ## Key Integrations
 
-### 1. WordPress REST API
+### 1. WPGraphQL (Primary for Products)
+**Endpoint**: `/graphql`
+
+**WordPress Plugins Required**:
+- WPGraphQL
+- WPGraphQL for WooCommerce
+
+**Used for**:
+- Products listing (`/products` page)
+- Product filtering & sorting
+- Product categories
+
+**Benefits**:
+- Fetch only needed fields
+- Single request for related data
+- Better performance
+- Type-safe with TypeScript
+
+**Files**:
+- `lib/graphql-client.ts` - GraphQL client
+- `lib/graphql/queries/products.ts` - Product queries
+- `lib/graphql/products.ts` - GraphQL functions
+- `lib/graphql-adapter.ts` - Convert GraphQL → REST API format
+
+### 2. WordPress REST API
 **Endpoint**: `/wp-json/wp/v2/`
 
 **Used for**:
 - Posts (`/posts`)
 - Pages (`/pages`)
-- Products (`/product`)
 - Categories (`/categories`, `/product_cat`)
 - Media (`/media`)
 
@@ -43,13 +69,13 @@ User Browser
 - Yoast SEO metadata
 - Custom post types
 
-### 2. WooCommerce REST API v3
+### 3. WooCommerce REST API v3
 **Endpoint**: `/wp-json/wc/v3/`
 
 **Authentication**: Basic Auth (Consumer Key + Secret)
 
 **Used for**:
-- Product details (`/products`)
+- Product details (fallback)
 - Pricing (regular, sale)
 - Attributes (color, size, brand, etc.)
 - Variations

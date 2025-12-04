@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { ArrowRight, Eye, ShoppingBag, TrendingUp } from 'lucide-react';
-import { getProducts, getProductCategories } from '@/lib/wordpress';
+import { getProducts } from '@/lib/graphql/products';
+import { graphQLProductsToWPProducts } from '@/lib/graphql-adapter';
+import { getProductCategories } from '@/lib/wordpress';
 import { ProductGrid } from '@/components/product';
 import { Button } from '@/components/ui';
 
@@ -15,10 +17,14 @@ export default async function HomePage() {
     let categories = [];
 
     try {
-        [featuredProducts, categories] = await Promise.all([
-            getProducts({ perPage: 8 }),
+        const [productsResult, categoriesData] = await Promise.all([
+            getProducts({ first: 8 }),
             getProductCategories({ perPage: 6 }),
         ]);
+
+        const graphQLProducts = productsResult.edges.map((edge: any) => edge.node);
+        featuredProducts = graphQLProductsToWPProducts(graphQLProducts);
+        categories = categoriesData;
     } catch (error) {
         console.error('Error fetching homepage data:', error);
     }

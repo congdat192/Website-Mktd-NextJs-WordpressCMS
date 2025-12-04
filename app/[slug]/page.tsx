@@ -4,9 +4,7 @@ import {
     getPageBySlug,
     getPages,
     getPostBySlug,
-    getProductBySlug,
     getPosts,
-    getProducts,
     getCategoryBySlug,
     getProductCategoryBySlug,
     getPostsByCategory,
@@ -15,6 +13,8 @@ import {
     getCategories,
     getProductCategories,
 } from '@/lib/wordpress';
+import { getProductBySlug, getProducts } from '@/lib/graphql/products';
+import { graphQLProductToWPProduct } from '@/lib/graphql-adapter';
 import type { Metadata } from 'next';
 
 interface PageProps {
@@ -128,9 +128,10 @@ export async function generateStaticParams() {
     }
 
     try {
-        // Get all products
-        const products = await getProducts({ perPage: 100 });
-        slugs.push(...products.map((product) => ({ slug: product.slug })));
+        // Get all products (GraphQL returns edges structure)
+        const productsResult = await getProducts({ first: 100 });
+        const products = productsResult.edges.map((edge: any) => edge.node);
+        slugs.push(...products.map((product: any) => ({ slug: product.slug })));
     } catch (error) {
         console.error('Failed to generate static params for products:', error);
     }
@@ -349,8 +350,11 @@ export default async function WordPressPage({ params }: PageProps) {
 
     // Try to get as product
     try {
-        const product = await getProductBySlug(slug);
-        if (product) {
+        const graphQLProduct = await getProductBySlug(slug);
+        if (graphQLProduct) {
+            // Convert GraphQL product to WP format
+            const product = graphQLProductToWPProduct(graphQLProduct);
+
             // Get related products from same category
             let relatedProducts: WPProduct[] = [];
             try {

@@ -133,6 +133,85 @@ export default function Page() {
 
 ---
 
+### 5. GraphQL vs REST API
+
+#### Current Status (December 2024):
+- **Products Page**: Uses GraphQL ✅
+- **Blog, Homepage, Other Pages**: Uses REST API
+
+#### When to Use GraphQL:
+
+```tsx
+// Products page - USES GRAPHQL
+import { getProducts } from '@/lib/graphql/products';
+import { graphQLProductsToWPProducts } from '@/lib/graphql-adapter';
+
+const result = await getProducts({ first: 12 });
+const products = graphQLProductsToWPProducts(result.edges.map(e => e.node));
+```
+
+#### When to Use REST API:
+
+```tsx
+// Blog, Pages - USES REST API
+import { getPosts } from '@/lib/wordpress';
+
+const posts = await getPosts({ perPage: 10 });
+```
+
+#### GraphQL Query Rules:
+
+❌ **NEVER DO**:
+```graphql
+# Missing inline fragments - WILL FAIL!
+query {
+  products {
+    edges {
+      node {
+        price  # ERROR: needs inline fragment
+      }
+    }
+  }
+}
+```
+
+✅ **ALWAYS DO**:
+```graphql
+# Proper inline fragments
+query {
+  products {
+    edges {
+      node {
+        ... on SimpleProduct {
+          price
+          date
+          productCategories { nodes { name } }
+        }
+        ... on VariableProduct {
+          price
+          date
+          productCategories { nodes { name } }
+        }
+      }
+    }
+  }
+}
+```
+
+#### Price Parsing:
+
+GraphQL returns formatted prices: `"1.920.000 ₫"`
+
+```tsx
+// Use parsePrice() helper in graphql-adapter.ts
+function parsePrice(priceString?: string): string {
+  if (!priceString) return '0';
+  return priceString.replace(/[^\d]/g, '') || '0';
+}
+```
+
+---
+
 ## 📋 Development Workflow
 
 ### Phase 1: Planning (ALWAYS DO THIS FIRST)

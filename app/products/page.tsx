@@ -1,19 +1,92 @@
-import { getProducts, WPProduct } from '@/lib/wordpress';
-import { ProductGrid } from '@/components/product';
+import { getProducts as getProductsGraphQL } from '@/lib/graphql/products';
+import { graphQLProductsToWPProducts } from '@/lib/graphql-adapter';
+import { ProductGrid, ProductFilter } from '@/components/product';
+import { Pagination } from '@/components/ui';
 
 export const metadata = {
     title: 'Sản phẩm - Mắt Kính Tâm Đức',
     description: 'Khám phá bộ sưu tập gọng kính và tròng kính chất lượng cao',
 };
 
-export default async function ProductsPage() {
-    let products: WPProduct[] = [];
+interface PageProps {
+    searchParams: {
+        page?: string;
+        category?: string;
+        priceRange?: string;
+        sortBy?: string;
+    };
+}
+
+export default async function ProductsPage({ searchParams }: PageProps) {
+    // Parse search params
+    const pageNum = parseInt(searchParams.page || '1');
+    const category = searchParams.category || 'all';
+    const priceRange = searchParams.priceRange || 'all';
+    const sortBy = searchParams.sortBy || 'newest';
+
+    // Parse price range
+    let minPrice, maxPrice;
+    if (priceRange !== 'all') {
+        const [min, max] = priceRange.split('-').map(Number);
+        minPrice = min;
+        maxPrice = max;
+    }
+
+    // Parse sort
+    let orderBy: 'DATE' | 'TITLE' | 'PRICE' = 'DATE';
+    let order: 'ASC' | 'DESC' = 'DESC';
+
+    switch (sortBy) {
+        case 'newest':
+            orderBy = 'DATE';
+            order = 'DESC';
+            break;
+        case 'oldest':
+            orderBy = 'DATE';
+            order = 'ASC';
+            break;
+        case 'price-asc':
+            orderBy = 'PRICE';
+            order = 'ASC';
+            break;
+        case 'price-desc':
+            orderBy = 'PRICE';
+            order = 'DESC';
+            break;
+        case 'name-asc':
+            orderBy = 'TITLE';
+            order = 'ASC';
+            break;
+        case 'name-desc':
+            orderBy = 'TITLE';
+            order = 'DESC';
+            break;
+    }
+
+    // Fetch products with GraphQL
+    let products = [];
+    let hasNextPage = false;
 
     try {
-        products = await getProducts({ perPage: 12 });
+        const result = await getProductsGraphQL({
+            first: 12,
+            categorySlug: category !== 'all' ? category : undefined,
+            minPrice,
+            maxPrice,
+            orderBy,
+            order,
+        });
+
+        // Convert GraphQL products to WP format for existing components
+        const graphQLProducts = result.edges.map((edge: any) => edge.node);
+        products = graphQLProductsToWPProducts(graphQLProducts);
+        hasNextPage = result.pageInfo.hasNextPage;
     } catch (error) {
         console.error('Error fetching products:', error);
     }
+
+    // Calculate total pages (simplified)
+    const totalPages = hasNextPage ? pageNum + 1 : pageNum;
 
     return (
         <div className="min-h-screen bg-[#F5F5F5]">
@@ -29,18 +102,35 @@ export default async function ProductsPage() {
 
             {/* Products Section */}
             <div className="container mx-auto px-4 py-8 md:py-12">
+                {/* Filter */}
+                <ProductFilter />
+
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <p className="text-[#666666]">
                         Hiển thị <span className="font-semibold text-[#333333]">{products.length}</span> sản phẩm
                     </p>
-                    {/* TODO: Add sort dropdown */}
                 </div>
 
                 {/* Products Grid */}
-                <ProductGrid products={products} columns={4} />
+                {products.length === 0 ? (
+                    <div className="text-center py-12">
+                        <p className="text-[#666666] text-lg">Không tìm thấy sản phẩm nào.</p>
+                    </div>
+                ) : (
+                    <ProductGrid products={products} columns={4} />
+                )}
 
-                {/* TODO: Add pagination */}
+                {/* Pagination */}
+                {totalPages > 1 && (
+                    <div className="mt-12">
+                        <Pagination
+                            currentPage={pageNum}
+                            totalPages={totalPages}
+                            baseUrl="/products"
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );

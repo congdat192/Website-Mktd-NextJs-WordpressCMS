@@ -4,12 +4,14 @@ A modern, headless WordPress frontend built with Next.js 15, featuring WooCommer
 
 ## 🚀 Features
 
-- **Headless WordPress CMS**: Decoupled frontend using WordPress REST API
+- **Headless WordPress CMS**: Decoupled frontend using WordPress REST API & GraphQL
 - **WooCommerce Integration**: Full e-commerce support with real product data
+- **GraphQL API**: Modern data fetching with WPGraphQL (products page migrated)
 - **Modern UI/UX**: Responsive, mobile-first design with Tailwind CSS
 - **SEO Optimized**: Built-in SEO support with Yoast integration
 - **Server-Side Rendering**: Fast page loads with Next.js SSR
 - **TypeScript**: Type-safe development experience
+- **Product Filtering & Sorting**: Server-side URL params for SEO-friendly filtering
 - **Product Detail Pages**: Beautiful, responsive product pages with:
   - Dynamic pricing (regular/sale)
   - Product attributes and variants
@@ -23,7 +25,11 @@ A modern, headless WordPress frontend built with Next.js 15, featuring WooCommer
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **CMS**: WordPress (Headless)
-- **E-commerce**: WooCommerce REST API v3
+- **APIs**: 
+  - WPGraphQL (products)
+  - WordPress REST API (posts, pages)
+  - WooCommerce REST API v3
+- **State Management**: Zustand
 - **Deployment**: Vercel
 
 ## 📋 Prerequisites
@@ -55,11 +61,18 @@ A modern, headless WordPress frontend built with Next.js 15, featuring WooCommer
    # WordPress API
    NEXT_PUBLIC_WP_API_URL=https://your-wordpress-site.com/wp-json
    
+   # GraphQL API (WPGraphQL plugin required)
+   NEXT_PUBLIC_GRAPHQL_URL=https://your-wordpress-site.com/graphql
+   
    # WooCommerce API
    WP_SITE_URL=https://your-wordpress-site.com
    WC_CONSUMER_KEY=ck_your_consumer_key
    WC_CONSUMER_SECRET=cs_your_consumer_secret
    ```
+   
+   **WordPress Plugins Required:**
+   - WPGraphQL
+   - WPGraphQL for WooCommerce
 
 4. **Run development server**
    ```bash

@@ -126,4 +126,102 @@ Plan → Create 2-3 components → Test → Fix → Commit → Repeat
 
 ---
 
+## 🔄 GraphQL Migration (December 4, 2024)
+
+### Migration Summary
+**Migrated**: Products page from REST API to GraphQL  
+**Status**: ✅ Complete  
+**Files Changed**: 7
+
+### Errors Encountered
+
+#### 1. Module Not Found - graphql-request
+**Error**: `Module not found: Can't resolve 'graphql-request'`  
+**Cause**: Package installed but dev server not restarted  
+**Solution**: Kill server and restart after `npm install`  
+**Lesson**: Always restart dev server after installing packages
+
+#### 2. GraphQL Query - Missing Inline Fragments
+**Error**: `Cannot query field "date" on type "ProductUnion"`  
+**Cause**: `date` and `productCategories` need inline fragments  
+**Solution**: Move fields into `... on SimpleProduct` and `... on VariableProduct`  
+**Lesson**: WooCommerce products are unions - always use inline fragments
+
+#### 3. Price Display - Formatted Strings
+**Error**: Price showing as "1,92đ" instead of "1.920.000đ"  
+**Cause**: GraphQL returns formatted price `"1.920.000 ₫"`  
+**Solution**: Created `parsePrice()` helper to strip non-digits  
+**Lesson**: GraphQL price format differs from REST API
+
+### Solutions Applied
+
+1. **GraphQL Client Setup**
+   ```typescript
+   // lib/graphql-client.ts
+   import { GraphQLClient } from 'graphql-request';
+   const graphqlClient = new GraphQLClient(endpoint, {
+     next: { revalidate: 60 }
+   });
+   ```
+
+2. **Inline Fragments Pattern**
+   ```graphql
+   ... on SimpleProduct {
+     date
+     price
+     productCategories { nodes { name } }
+   }
+   ... on VariableProduct {
+     date
+     price
+     productCategories { nodes { name } }
+   }
+   ```
+
+3. **Price Parsing**
+   ```typescript
+   function parsePrice(priceString?: string): string {
+     return priceString?.replace(/[^\d]/g, '') || '0';
+   }
+   ```
+
+4. **Backward Compatibility**
+   - Created `graphql-adapter.ts`
+   - Converts GraphQL → REST API format
+   - Existing components work without changes
+
+### Best Practices Established
+
+1. **GraphQL Query Structure**
+   - Always use inline fragments for union types
+   - Include `type` field to identify product type
+   - Fetch only needed fields
+
+2. **Migration Strategy**
+   - Gradual migration (page by page)
+   - Keep REST API as fallback
+   - Use adapter for backward compatibility
+
+3. **Testing Workflow**
+   - Test queries in GraphiQL IDE first
+   - Verify data structure
+   - Check price formatting
+
+### Files Created
+
+- `lib/graphql-client.ts` - GraphQL client
+- `lib/graphql/queries/products.ts` - Product queries
+- `lib/graphql/products.ts` - GraphQL functions
+- `lib/graphql-adapter.ts` - Data adapter
+- `WPGRAPHQL_MIGRATION_GUIDE.md` - Migration guide
+- `GRAPHQL_SETUP.md` - Setup instructions
+
+### WordPress Plugins Required
+
+- WPGraphQL
+- WPGraphQL for WooCommerce
+
+---
+
 **Next Session**: Follow AI_GUIDELINES.md strictly to avoid these errors.
+

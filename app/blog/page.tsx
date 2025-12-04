@@ -1,97 +1,139 @@
 import Link from 'next/link';
-import { getPosts, type WPPost } from '@/lib/wordpress';
-import type { Metadata } from 'next';
+import { getPosts } from '@/lib/graphql/posts';
+import { graphQLPostsToWPPosts } from '@/lib/graphql-adapter';
+import { Card, CardContent } from '@/components/ui';
+import { Calendar, ArrowRight } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
 
-export const metadata: Metadata = {
-    title: 'Tin tức - Mắt Kính Tâm Đức',
-    description: 'Tin tức, bài viết về mắt kính, sức khỏe mắt và xu hướng thời trang',
+export const metadata = {
+    title: 'Blog - Mắt Kính Tâm Đức',
+    description: 'Tin tức, kiến thức và hướng dẫn về mắt kính',
 };
 
 export default async function BlogPage() {
-    let posts: WPPost[] = [];
-    let error = null;
+    let posts = [];
 
     try {
-        posts = await getPosts({ perPage: 20 });
-    } catch (err) {
-        error = err;
-        console.error('Failed to fetch posts:', err);
+        const result = await getPosts({ first: 12 });
+        const graphQLPosts = result.edges.map((edge: any) => edge.node);
+        posts = graphQLPostsToWPPosts(graphQLPosts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
     }
 
     return (
-        <div className="container mx-auto px-4 py-12">
-            <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl font-bold mb-4">Tin tức</h1>
-                <p className="text-gray-600 mb-12">
-                    Cập nhật tin tức mới nhất về mắt kính, sức khỏe mắt và xu hướng thời trang
-                </p>
+        <div className="min-h-screen bg-[#F5F5F5]">
+            {/* Hero Section */}
+            <div className="bg-gradient-to-r from-[#228B22] to-[#1a6b1a] text-white py-12 md:py-16">
+                <div className="container mx-auto px-4">
+                    <h1 className="text-3xl md:text-4xl font-bold mb-4">Blog</h1>
+                    <p className="text-lg md:text-xl opacity-90 max-w-2xl">
+                        Tin tức, kiến thức và hướng dẫn chăm sóc mắt
+                    </p>
+                </div>
+            </div>
 
-                {error ? (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-                        <p className="text-red-600 font-semibold mb-2">
-                            Không thể tải bài viết
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            Vui lòng kiểm tra cấu hình NEXT_PUBLIC_WP_API_URL trong file .env.local
-                        </p>
-                    </div>
-                ) : posts.length === 0 ? (
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-                        <p className="text-gray-600">
-                            Chưa có bài viết nào.
-                        </p>
+            {/* Blog Posts */}
+            <div className="container mx-auto px-4 py-8 md:py-12">
+                {posts.length === 0 ? (
+                    <div className="text-center py-12">
+                        <p className="text-[#666666] text-lg">Chưa có bài viết nào.</p>
                     </div>
                 ) : (
-                    <div className="space-y-8">
-                        {posts.map((post) => (
-                            <article
-                                key={post.id}
-                                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow"
-                            >
-                                <div className="md:flex">
-                                    {post._embedded?.['wp:featuredmedia']?.[0]?.source_url && (
-                                        <div className="md:w-1/3 bg-gray-200">
-                                            <img
-                                                src={post._embedded['wp:featuredmedia'][0].source_url}
-                                                alt={post._embedded['wp:featuredmedia'][0].alt_text || post.title.rendered}
-                                                className="w-full h-full object-cover"
-                                            />
+                    <>
+                        {/* Featured Post */}
+                        {posts[0] && (
+                            <div className="mb-12">
+                                <Link href={`/${posts[0].slug}`}>
+                                    <Card variant="elevated" padding="none" className="overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+                                        <div className="grid md:grid-cols-2 gap-0">
+                                            {/* Image */}
+                                            {posts[0]._embedded?.['wp:featuredmedia']?.[0] && (
+                                                <div className="relative aspect-video md:aspect-square overflow-hidden bg-[#F5F5F5]">
+                                                    <img
+                                                        src={posts[0]._embedded['wp:featuredmedia'][0].source_url}
+                                                        alt={posts[0].title.rendered}
+                                                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                                    />
+                                                </div>
+                                            )}
+
+                                            {/* Content */}
+                                            <div className="p-6 md:p-8 flex flex-col justify-center">
+                                                <div className="inline-block mb-4">
+                                                    <span className="bg-[#228B22] text-white text-xs font-semibold px-3 py-1 rounded-full">
+                                                        Nổi bật
+                                                    </span>
+                                                </div>
+
+                                                <h2 className="text-2xl md:text-3xl font-bold text-[#333333] mb-4 hover:text-[#228B22] transition">
+                                                    {posts[0].title.rendered}
+                                                </h2>
+
+                                                {posts[0].excerpt?.rendered && (
+                                                    <div
+                                                        className="text-[#666666] mb-6 line-clamp-3"
+                                                        dangerouslySetInnerHTML={{ __html: posts[0].excerpt.rendered }}
+                                                    />
+                                                )}
+
+                                                <div className="flex items-center gap-4 text-sm text-[#666666] mb-6">
+                                                    <div className="flex items-center gap-2">
+                                                        <Calendar className="w-4 h-4" />
+                                                        <span>{formatDate(posts[0].date)}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center text-[#228B22] font-semibold">
+                                                    Đọc thêm
+                                                    <ArrowRight className="w-5 h-5 ml-2" />
+                                                </div>
+                                            </div>
                                         </div>
-                                    )}
-                                    <div className="p-6 md:w-2/3">
-                                        <time className="text-sm text-gray-500">
-                                            {new Date(post.date).toLocaleDateString('vi-VN', {
-                                                year: 'numeric',
-                                                month: 'long',
-                                                day: 'numeric',
-                                            })}
-                                        </time>
-                                        <h2 className="text-2xl font-bold mt-2 mb-3">
-                                            <Link
-                                                href={`/${post.slug}`}
-                                                className="hover:text-blue-600 transition-colors"
-                                            >
+                                    </Card>
+                                </Link>
+                            </div>
+                        )}
+
+                        {/* Posts Grid */}
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {posts.slice(1).map((post) => (
+                                <Link key={post.id} href={`/${post.slug}`}>
+                                    <Card variant="default" padding="none" className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer h-full">
+                                        {/* Image */}
+                                        {post._embedded?.['wp:featuredmedia']?.[0] && (
+                                            <div className="relative aspect-video overflow-hidden bg-[#F5F5F5]">
+                                                <img
+                                                    src={post._embedded['wp:featuredmedia'][0].source_url}
+                                                    alt={post.title.rendered}
+                                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                                />
+                                            </div>
+                                        )}
+
+                                        {/* Content */}
+                                        <CardContent className="p-6">
+                                            <h3 className="text-xl font-bold text-[#333333] mb-3 line-clamp-2 hover:text-[#228B22] transition min-h-[3.5rem]">
                                                 {post.title.rendered}
-                                            </Link>
-                                        </h2>
-                                        <div
-                                            className="text-gray-600 line-clamp-3 mb-4"
-                                            dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
-                                        />
-                                        <Link
-                                            href={`/${post.slug}`}
-                                            className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold"
-                                        >
-                                            Đọc thêm
-                                            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </article>
-                        ))}
-                    </div>
+                                            </h3>
+
+                                            {post.excerpt?.rendered && (
+                                                <div
+                                                    className="text-sm text-[#666666] mb-4 line-clamp-3"
+                                                    dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
+                                                />
+                                            )}
+
+                                            <div className="flex items-center gap-2 text-xs text-[#666666]">
+                                                <Calendar className="w-4 h-4" />
+                                                <span>{formatDate(post.date)}</span>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </Link>
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
         </div>
