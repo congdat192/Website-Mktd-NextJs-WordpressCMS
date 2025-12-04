@@ -87,9 +87,6 @@ export default async function HomePage() {
                                     src="/hero-glasses.jpg"
                                     alt="Mắt kính cao cấp"
                                     className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                        e.currentTarget.src = 'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=800&h=800&fit=crop';
-                                    }}
                                 />
                             </div>
                             {/* Floating Card */}

@@ -1,4 +1,6 @@
+```typescript
 import { ButtonHTMLAttributes, forwardRef } from 'react';
+import { Slot } from '@radix-ui/react-slot';
 import { cn } from '@/lib/utils';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -6,6 +8,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     size?: 'sm' | 'md' | 'lg';
     isLoading?: boolean;
     fullWidth?: boolean;
+    asChild?: boolean;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -14,13 +17,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         size = 'md',
         isLoading,
         fullWidth,
+        asChild = false,
         className,
         children,
         disabled,
         ...props
     }, ref) => {
+        const Comp = asChild ? Slot : 'button';
+
         return (
-            <button
+            <Comp
                 ref={ref}
                 disabled={disabled || isLoading}
                 className={cn(
@@ -56,9 +62,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         Đang xử lý...
                     </>
                 ) : children}
-            </button>
+            </Comp>
         );
     }
 );
 
 Button.displayName = 'Button';
+```
