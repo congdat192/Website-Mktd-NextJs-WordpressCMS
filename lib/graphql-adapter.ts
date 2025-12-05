@@ -19,6 +19,9 @@ function parsePrice(priceString?: string): string {
  * This allows us to use GraphQL data with existing components
  */
 export function graphQLProductToWPProduct(graphQLProduct: GraphQLProduct): WPProduct {
+    // Get category databaseIds
+    const categoryIds = graphQLProduct.productCategories?.nodes.map(cat => cat.databaseId || 0).filter(id => id > 0) || [];
+
     return {
         id: graphQLProduct.databaseId,
         date: graphQLProduct.date || new Date().toISOString(),
@@ -27,13 +30,13 @@ export function graphQLProductToWPProduct(graphQLProduct: GraphQLProduct): WPPro
             rendered: graphQLProduct.name,
         },
         content: {
-            rendered: '', // Not fetched in list view
+            rendered: graphQLProduct.description || '',
         },
         excerpt: {
-            rendered: '', // Not fetched in list view
+            rendered: graphQLProduct.shortDescription || graphQLProduct.description || '',
         },
         featured_media: 0,
-        product_cat: graphQLProduct.productCategories?.nodes.map(cat => parseInt(cat.id)) || [],
+        product_cat: categoryIds,
         product_tag: [],
         product_brand: [],
         _embedded: {
@@ -43,7 +46,7 @@ export function graphQLProductToWPProduct(graphQLProduct: GraphQLProduct): WPPro
             }] : undefined,
             'wp:term': graphQLProduct.productCategories ? [[
                 ...graphQLProduct.productCategories.nodes.map(cat => ({
-                    id: parseInt(cat.id),
+                    id: cat.databaseId || 0,
                     name: cat.name,
                     slug: cat.slug,
                     taxonomy: 'product_cat' as const,
@@ -59,17 +62,41 @@ export function graphQLProductToWPProduct(graphQLProduct: GraphQLProduct): WPPro
             id: graphQLProduct.databaseId,
             name: graphQLProduct.name,
             slug: graphQLProduct.slug,
-            sku: '',
+            sku: graphQLProduct.sku || graphQLProduct.slug?.toUpperCase() || '',
             price: parsePrice(graphQLProduct.price),
             regular_price: parsePrice(graphQLProduct.regularPrice),
             sale_price: parsePrice(graphQLProduct.salePrice),
             on_sale: graphQLProduct.onSale || false,
             stock_status: (graphQLProduct.stockStatus?.toLowerCase() as 'instock' | 'outofstock' | 'onbackorder') || 'instock',
-            stock_quantity: null,
-            attributes: [],
-            variations: [],
+            stock_quantity: graphQLProduct.stockQuantity || null,
+            attributes: graphQLProduct.attributes?.nodes?.map(attr => ({
+                name: attr.name,
+                slug: attr.name?.toLowerCase().replace(/\s+/g, '-'),
+                options: attr.options || [],
+            })) || [],
+            variations: graphQLProduct.variations?.nodes?.map(variation => ({
+                id: variation.databaseId,
+                name: variation.name,
+                price: parsePrice(variation.price),
+                regular_price: parsePrice(variation.regularPrice),
+                sale_price: parsePrice(variation.salePrice),
+                stock_status: variation.stockStatus?.toLowerCase() || 'instock',
+                stock_quantity: variation.stockQuantity || null,
+                image: variation.image ? {
+                    src: variation.image.sourceUrl,
+                    alt: variation.image.altText || '',
+                } : undefined,
+                attributes: variation.attributes?.nodes?.map(attr => ({
+                    name: attr.name,
+                    option: attr.value,
+                })) || [],
+            })) || [],
             average_rating: graphQLProduct.averageRating?.toString() || '0',
             rating_count: graphQLProduct.reviewCount || 0,
+            gallery_images: graphQLProduct.galleryImages?.nodes?.map(img => ({
+                src: img.sourceUrl,
+                alt: img.altText || '',
+            })) || [],
         },
     };
 }

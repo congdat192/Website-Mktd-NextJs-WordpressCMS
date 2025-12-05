@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request';
 
 export const GET_PRODUCT_CATEGORIES = gql`
-  query GetProductCategories($first: Int = 100) {
+  query GetProductCategories($first: Int = 500) {
     productCategories(first: $first) {
       nodes {
         id
@@ -10,9 +10,11 @@ export const GET_PRODUCT_CATEGORIES = gql`
         slug
         count
         description
+        parentDatabaseId
         parent {
           node {
             id
+            databaseId
             slug
           }
         }

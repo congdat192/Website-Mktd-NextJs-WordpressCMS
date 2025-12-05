@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * Tailwind CSS theme
+   * tailwind.config.ts expects the following color variables to be expressed as HSL or RGB numeric triplets.
+  */
+  :root {
+    --background: 255 255 255;
+    --foreground: 15 23 42;
+
+    --card: 255 255 255;
+    --card-foreground: 15 23 42;
+
+    --popover: 255 255 255;
+    --popover-foreground: 15 23 42;
+
+    /* Forest Green primary (RGB triplet) */
+    --primary: 34 139 34;
+    --primary-foreground: 255 255 255;
+
+    --secondary: 241 245 249;
+    --secondary-foreground: 15 23 42;
+
+    --muted: 248 250 252;
+    --muted-foreground: 100 116 139;
+
+    --accent: 236 253 245;
+    --accent-foreground: 15 23 42;
+
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+
+    --border: 226 232 240;
+    --input: 226 232 240;
+    --ring: 34 139 34;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 255 255 255;
+    --sidebar-foreground: 71 85 105;
+    --sidebar-primary: 34 139 34;
+    --sidebar-primary-foreground: 255 255 255;
+    --sidebar-accent: 248 250 252;
+    --sidebar-accent-foreground: 22 163 74;
+    --sidebar-border: 226 232 240;
+    --sidebar-ring: 34 139 34;
+  }
+
+  .dark {
+    --background: 2 6 23;
+    --foreground: 248 250 252;
+
+    --card: 2 6 23;
+    --card-foreground: 248 250 252;
+
+    --popover: 2 6 23;
+    --popover-foreground: 248 250 252;
+
+    --primary: 34 139 34;
+    --primary-foreground: 255 255 255;
+
+    --secondary: 30 41 59;
+    --secondary-foreground: 248 250 252;
+
+    --muted: 15 23 42;
+    --muted-foreground: 148 163 184;
+
+    --accent: 20 83 45;
+    --accent-foreground: 248 250 252;
+
+    --destructive: 239 68 68;
+    --destructive-foreground: 248 250 252;
+
+    --border: 30 41 59;
+    --input: 30 41 59;
+    --ring: 34 139 34;
+    --sidebar-background: 2 6 23;
+    --sidebar-foreground: 148 163 184;
+    --sidebar-primary: 34 139 34;
+    --sidebar-primary-foreground: 255 255 255;
+    --sidebar-accent: 15 23 42;
+    --sidebar-accent-foreground: 148 163 184;
+    --sidebar-border: 30 41 59;
+    --sidebar-ring: 34 139 34;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar but allow scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+
+  /* Infinite scroll animation */
+  @keyframes scroll-infinite {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-scroll-infinite {
+    animation: scroll-infinite 30s linear infinite;
+  }
+
+  .animate-scroll-infinite:hover {
+    animation-play-state: paused;
+  }
+
+  /* Line clamp utilities */
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}

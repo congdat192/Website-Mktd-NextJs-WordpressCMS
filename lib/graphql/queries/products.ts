@@ -5,6 +5,7 @@ export const GET_PRODUCTS = gql`
     $first: Int = 12
     $after: String
     $categorySlug: String
+    $categoryIn: [String]
     $minPrice: Float
     $maxPrice: Float
     $orderBy: ProductsOrderByEnum = DATE
@@ -15,6 +16,7 @@ export const GET_PRODUCTS = gql`
       after: $after
       where: {
         category: $categorySlug
+        categoryIn: $categoryIn
         minPrice: $minPrice
         maxPrice: $maxPrice
         orderby: [{ field: $orderBy, order: $order }]
@@ -50,6 +52,7 @@ export const GET_PRODUCTS = gql`
             productCategories {
               nodes {
                 id
+                databaseId
                 name
                 slug
               }
@@ -67,6 +70,7 @@ export const GET_PRODUCTS = gql`
             productCategories {
               nodes {
                 id
+                databaseId
                 name
                 slug
               }
@@ -142,6 +146,7 @@ export const GET_PRODUCT_BY_SLUG = gql`
       productCategories {
         nodes {
           id
+          databaseId
           name
           slug
         }

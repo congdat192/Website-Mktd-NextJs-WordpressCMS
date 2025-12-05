@@ -1,6 +1,6 @@
 # WordPress + Next.js Headless E-commerce
 
-A modern, headless WordPress e-commerce frontend built with Next.js 15, featuring full WPGraphQL integration and WooCommerce shopping cart/checkout functionality.
+A modern, headless WordPress e-commerce frontend built with Next.js 15, featuring full WPGraphQL integration, WooCommerce shopping cart/checkout functionality, and a Builder.io-inspired premium UI design.
 
 ## 🎯 Project Status
 
@@ -8,9 +8,9 @@ A modern, headless WordPress e-commerce frontend built with Next.js 15, featurin
 |-------|-------------|--------|
 | Phase 1 | GraphQL Migration | ✅ Complete |
 | Phase 2 | Cart & Checkout | ✅ Complete |
-| Phase 3 | User Authentication | ⏳ Upcoming |
-| Phase 4 | SEO & Performance | ⏳ Planned |
-| Phase 5 | Search & Filters | ⏳ Planned |
+| Phase 3 | UI Redesign (Builder.io) | ✅ Complete |
+| Phase 4 | User Authentication | ⏳ Upcoming |
+| Phase 5 | SEO & Performance | ⏳ Planned |
 | Phase 6 | Production Launch | ⏳ Planned |
 
 ## 🚀 Features
@@ -21,6 +21,11 @@ A modern, headless WordPress e-commerce frontend built with Next.js 15, featurin
 - **Shopping Cart**: Zustand-powered with localStorage persistence
 - **Multi-step Checkout**: Customer info, shipping, payment selection
 - **WooCommerce Orders**: Real order creation via WooCommerce REST API
+- **Builder.io Premium Design**: 
+  - Modern Header with mega menus and mobile drawer
+  - Enhanced product cards with quick view
+  - Product detail page with gallery, variants, tabs
+  - Category pages with advanced filters
 - **Product Pages**: Beautiful, responsive product details with:
   - Dynamic pricing (regular/sale)
   - Product attributes and variants
@@ -35,7 +40,6 @@ A modern, headless WordPress e-commerce frontend built with Next.js 15, featurin
 - User authentication (login/register)
 - Order history
 - Product search
-- Advanced filters
 - Wishlist/favorites
 
 ## 🛠️ Tech Stack
@@ -215,4 +219,4 @@ Product Page → "Thêm vào giỏ" → Cart updates + Toast
 
 **Live Site**: https://matkinhtamduc.com
 
-**Last Updated**: December 4, 2024
+**Last Updated**: December 6, 2024
