@@ -160,9 +160,15 @@ export default async function WordPressPage({ params }: PageProps) {
     try {
         const category = await getProductCategoryBySlug(slug);
         if (category) {
-            // Fetch ALL products using pagination
-            const allGraphQLProducts = await getAllProducts(slug);
-            const products = graphQLProductsToWPProducts(allGraphQLProducts);
+            // Fetch ALL products using pagination - with error handling
+            let products: any[] = [];
+            try {
+                const allGraphQLProducts = await getAllProducts(slug);
+                products = graphQLProductsToWPProducts(allGraphQLProducts);
+            } catch (productError) {
+                console.error(`[${slug}] Failed to fetch products:`, productError);
+                // Continue with empty products array - page still renders
+            }
             console.log(`[${slug}] Loaded ${products.length} products`);
 
             return (
