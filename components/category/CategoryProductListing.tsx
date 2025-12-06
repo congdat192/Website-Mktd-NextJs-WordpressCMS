@@ -4,7 +4,6 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
     Search,
-    Filter,
     Grid3X3,
     List,
     Eye,
@@ -210,16 +209,16 @@ export function CategoryProductListing({
                                 key={filter.id}
                                 onClick={() => setSelectedQuickFilter(filter.id)}
                                 className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition ${selectedQuickFilter === filter.id
-                                        ? 'bg-primary text-white shadow-md'
-                                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                                    ? 'bg-primary text-white shadow-md'
+                                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
                                     }`}
                             >
                                 {filter.icon}
                                 {filter.label}
                                 {filter.id === 'sale' && saleCount > 0 && (
                                     <span className={`text-xs px-1.5 py-0.5 rounded-full ${selectedQuickFilter === filter.id
-                                            ? 'bg-white/20'
-                                            : 'bg-red-100 text-red-600'
+                                        ? 'bg-white/20'
+                                        : 'bg-red-100 text-red-600'
                                         }`}>
                                         {saleCount}
                                     </span>
@@ -238,8 +237,8 @@ export function CategoryProductListing({
                                 key={type.id}
                                 onClick={() => setSelectedFrameType(type.id)}
                                 className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition ${selectedFrameType === type.id
-                                        ? 'bg-primary text-white shadow-md'
-                                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                                    ? 'bg-primary text-white shadow-md'
+                                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
                                     }`}
                             >
                                 {type.icon}
@@ -354,8 +353,8 @@ export function CategoryProductListing({
                 {/* Products Grid */}
                 {paginatedProducts.length > 0 ? (
                     <div className={`grid gap-6 mb-8 ${viewMode === 'grid'
-                            ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-                            : 'grid-cols-1'
+                        ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                        : 'grid-cols-1'
                         }`}>
                         {paginatedProducts.map((product, idx) => (
                             <ProductCardEnhanced
@@ -411,8 +410,8 @@ export function CategoryProductListing({
                                         key={page}
                                         onClick={() => setCurrentPage(page)}
                                         className={`w-10 h-10 rounded-lg text-sm font-medium transition ${currentPage === page
-                                                ? 'bg-primary text-white'
-                                                : 'border border-gray-200 hover:bg-gray-50'
+                                            ? 'bg-primary text-white'
+                                            : 'border border-gray-200 hover:bg-gray-50'
                                             }`}
                                     >
                                         {page}

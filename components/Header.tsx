@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
     Menu,
     Phone,
@@ -15,7 +14,6 @@ import {
     Circle,
     Star,
     X,
-    ChevronRight,
     MapPin,
     User,
     Heart,

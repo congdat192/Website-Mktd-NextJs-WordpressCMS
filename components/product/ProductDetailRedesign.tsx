@@ -21,11 +21,7 @@ import {
     ChevronUp,
     Gift,
     Truck,
-    Phone,
     Clock,
-    Award,
-    Eye,
-    Package,
 } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
 
@@ -93,7 +89,6 @@ export function ProductDetailRedesign({ product, relatedProducts = [] }: Product
     // Get product data
     const price = parseInt(product.wc_data?.price || '0');
     const regularPrice = parseInt(product.wc_data?.regular_price || '0');
-    const salePrice = parseInt(product.wc_data?.sale_price || '0');
     const isOnSale = product.wc_data?.on_sale;
     const discount = regularPrice > 0 && price < regularPrice
         ? Math.round(((regularPrice - price) / regularPrice) * 100)
@@ -216,8 +211,8 @@ export function ProductDetailRedesign({ product, relatedProducts = [] }: Product
                                     key={idx}
                                     onClick={() => setSelectedImageIndex(idx)}
                                     className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${selectedImageIndex === idx
-                                            ? 'border-primary ring-2 ring-primary/20'
-                                            : 'border-gray-200 hover:border-gray-300'
+                                        ? 'border-primary ring-2 ring-primary/20'
+                                        : 'border-gray-200 hover:border-gray-300'
                                         }`}
                                 >
                                     <Image src={img} alt="" width={64} height={64} className="w-full h-full object-cover" />
@@ -285,8 +280,8 @@ export function ProductDetailRedesign({ product, relatedProducts = [] }: Product
                                             <Star
                                                 key={star}
                                                 className={`w-4 h-4 ${star <= Math.round(rating)
-                                                        ? 'text-yellow-400 fill-yellow-400'
-                                                        : 'text-gray-300'
+                                                    ? 'text-yellow-400 fill-yellow-400'
+                                                    : 'text-gray-300'
                                                     }`}
                                             />
                                         ))}
@@ -355,8 +350,8 @@ export function ProductDetailRedesign({ product, relatedProducts = [] }: Product
                                                 key={color}
                                                 onClick={() => setSelectedColor(color)}
                                                 className={`px-4 py-2 rounded-lg border-2 font-medium transition ${selectedColor === color
-                                                        ? 'border-primary bg-primary/5 text-primary'
-                                                        : 'border-gray-300 hover:border-gray-400'
+                                                    ? 'border-primary bg-primary/5 text-primary'
+                                                    : 'border-gray-300 hover:border-gray-400'
                                                     }`}
                                             >
                                                 {color}
@@ -379,8 +374,8 @@ export function ProductDetailRedesign({ product, relatedProducts = [] }: Product
                                                 key={size}
                                                 onClick={() => setSelectedSize(size)}
                                                 className={`px-4 py-2 rounded-lg border-2 font-medium transition ${selectedSize === size
-                                                        ? 'border-primary bg-primary/5 text-primary'
-                                                        : 'border-gray-300 hover:border-gray-400'
+                                                    ? 'border-primary bg-primary/5 text-primary'
+                                                    : 'border-gray-300 hover:border-gray-400'
                                                     }`}
                                             >
                                                 {size}
@@ -508,8 +503,8 @@ export function ProductDetailRedesign({ product, relatedProducts = [] }: Product
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`px-6 py-4 font-medium transition ${activeTab === tab.id
-                                        ? 'text-primary border-b-2 border-primary bg-primary/5'
-                                        : 'text-gray-600 hover:text-gray-900'
+                                    ? 'text-primary border-b-2 border-primary bg-primary/5'
+                                    : 'text-gray-600 hover:text-gray-900'
                                     }`}
                             >
                                 {tab.label}
