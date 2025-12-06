@@ -31,9 +31,9 @@ export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showMegaMenu, setShowMegaMenu] = useState<string | null>(null);
     const [expandedMobileItem, setExpandedMobileItem] = useState<string | null>(null);
-    const { cartItems } = useCart();
+    const { items } = useCart();
 
-    const cartCount = (cartItems || []).reduce((sum, item) => sum + item.quantity, 0);
+    const cartCount = (items || []).reduce((sum, item) => sum + item.quantity, 0);
 
     // Navigation items
     const navItems = [
