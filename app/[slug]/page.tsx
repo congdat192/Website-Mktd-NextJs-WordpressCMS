@@ -276,8 +276,8 @@ export default async function WordPressPage({ params }: PageProps) {
 
             return (
                 <ProductDetailRedesign
-                    product={product}
-                    relatedProducts={relatedProducts}
+                    product={product as any}
+                    relatedProducts={relatedProducts as any}
                 />
             );
         }
