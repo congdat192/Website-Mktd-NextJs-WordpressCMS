@@ -264,11 +264,12 @@ export default async function WordPressPage({ params }: PageProps) {
             // Get related products from same category
             let relatedProducts: WPProduct[] = [];
             try {
-                if (product.product_cat && product.product_cat.length > 0) {
-                    const categoryId = product.product_cat[0];
-                    const allProducts = await getProductsByCategory(categoryId, { perPage: 5 });
-                    relatedProducts = allProducts.filter(p => p.id !== product.id).slice(0, 4);
-                }
+                // Use GraphQL to get related products
+                const relatedResult = await getProducts({ first: 5 });
+                const relatedGraphQL = relatedResult.edges.map((e: any) => e.node);
+                relatedProducts = graphQLProductsToWPProducts(relatedGraphQL)
+                    .filter(p => p.id !== product.id)
+                    .slice(0, 4);
             } catch {
                 // Ignore related products error
             }
