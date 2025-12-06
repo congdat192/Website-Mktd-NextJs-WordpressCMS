@@ -60,13 +60,18 @@ WooCommerce Orders API
 - ✅ Static params generation
 
 **Files**:
-- `lib/graphql-client.ts` - GraphQL client setup
+- `lib/graphql-client.ts` - GraphQL client setup with retry logic
 - `lib/graphql/queries/` - GraphQL query definitions
 - `lib/graphql/products.ts` - Product operations
 - `lib/graphql/posts.ts` - Blog post operations
 - `lib/graphql/pages.ts` - Page operations
 - `lib/graphql/categories.ts` - Category operations
 - `lib/graphql-adapter.ts` - Convert GraphQL → WP format for compatibility
+
+**API Resilience**:
+- Retry logic with exponential backoff (3 retries)
+- Defensive error handling prevents build crashes
+- Graceful fallback to empty arrays on API failure
 
 ### 2. WooCommerce REST API v3
 **Endpoint**: `/wp-json/wc/v3/`
