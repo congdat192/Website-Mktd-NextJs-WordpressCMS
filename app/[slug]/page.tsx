@@ -169,7 +169,7 @@ export default async function WordPressPage({ params }: PageProps) {
                 <CategoryProductListing
                     categoryName={category.name}
                     categoryDescription={category.description || ''}
-                    products={products}
+                    products={products as any}
                     showHeroBanner={false}
                 />
             );
