@@ -79,7 +79,7 @@ export function ProductDetailRedesign({ product, relatedProducts = [] }: Product
     const [activeTab, setActiveTab] = useState('description');
     const [showImageZoom, setShowImageZoom] = useState(false);
 
-    const { addToCart } = useCart();
+    const { addItem } = useCart();
 
     // Get images
     const mainImage = product._embedded?.['wp:featuredmedia']?.[0]?.source_url || '/placeholder.jpg';
@@ -121,13 +121,14 @@ export function ProductDetailRedesign({ product, relatedProducts = [] }: Product
 
     // Handle add to cart
     const handleAddToCart = () => {
-        addToCart({
+        addItem({
             id: product.id,
+            productId: product.id,
             name: product.title.rendered,
+            slug: product.slug,
             price: selectedVariation?.price || price,
             image: currentImage,
-            quantity,
-            variant: selectedColor || selectedSize ? `${selectedColor || ''} ${selectedSize || ''}`.trim() : undefined,
+            sku: product.wc_data?.sku,
         });
     };
 

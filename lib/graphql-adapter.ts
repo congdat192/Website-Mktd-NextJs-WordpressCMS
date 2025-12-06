@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { GraphQLProduct } from './graphql/products';
 import type { GraphQLPost } from './graphql/posts';
 import type { GraphQLPage } from './graphql/pages';
-import type { WPProduct, WPPost, WPPage } from './wordpress';
+import type { WPProduct, WPPost, WPPage, WCProduct } from './wordpress';
 
 /**
  * Parse formatted price string to number
@@ -18,7 +19,7 @@ function parsePrice(priceString?: string): string {
  * Convert GraphQL product to WordPress REST API format
  * This allows us to use GraphQL data with existing components
  */
-export function graphQLProductToWPProduct(graphQLProduct: GraphQLProduct): WPProduct {
+export function graphQLProductToWPProduct(graphQLProduct: GraphQLProduct): WPProduct & Record<string, any> {
     // Get category databaseIds
     const categoryIds = graphQLProduct.productCategories?.nodes.map(cat => cat.databaseId || 0).filter(id => id > 0) || [];
 
@@ -69,12 +70,16 @@ export function graphQLProductToWPProduct(graphQLProduct: GraphQLProduct): WPPro
             on_sale: graphQLProduct.onSale || false,
             stock_status: (graphQLProduct.stockStatus?.toLowerCase() as 'instock' | 'outofstock' | 'onbackorder') || 'instock',
             stock_quantity: graphQLProduct.stockQuantity || null,
-            attributes: graphQLProduct.attributes?.nodes?.map(attr => ({
+            attributes: graphQLProduct.attributes?.nodes?.map((attr, index) => ({
+                id: index + 1,
                 name: attr.name,
                 slug: attr.name?.toLowerCase().replace(/\s+/g, '-'),
+                position: index,
+                visible: true,
+                variation: false,
                 options: attr.options || [],
             })) || [],
-            variations: graphQLProduct.variations?.nodes?.map(variation => ({
+            variations: (graphQLProduct.variations?.nodes?.map(variation => ({
                 id: variation.databaseId,
                 name: variation.name,
                 price: parsePrice(variation.price),
@@ -90,14 +95,14 @@ export function graphQLProductToWPProduct(graphQLProduct: GraphQLProduct): WPPro
                     name: attr.name,
                     option: attr.value,
                 })) || [],
-            })) || [],
+            })) || []) as any,
             average_rating: graphQLProduct.averageRating?.toString() || '0',
             rating_count: graphQLProduct.reviewCount || 0,
             gallery_images: graphQLProduct.galleryImages?.nodes?.map(img => ({
                 src: img.sourceUrl,
                 alt: img.altText || '',
             })) || [],
-        },
+        } as WCProduct,
     };
 }
 

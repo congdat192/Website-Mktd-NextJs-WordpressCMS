@@ -15,7 +15,7 @@ import {
     Palette,
 } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
-import { useToast } from '@/components/ui/Toast';
+import { useToast } from '@/hooks/useToast';
 
 interface ProductVariant {
     id: number;
@@ -78,7 +78,7 @@ export function ProductCardEnhanced({
 }: ProductCardEnhancedProps) {
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
-    const { addToCart } = useCart();
+    const { addItem } = useCart();
     const { showToast } = useToast();
 
     // Get main image
@@ -134,17 +134,16 @@ export function ProductCardEnhanced({
     }, [] as Array<{ option: string; variant: ProductVariant }>);
 
     const handleAddToCart = () => {
-        addToCart({
+        addItem({
             id: product.id,
             productId: product.id,
             name: product.title.rendered.replace(/&amp;/g, '&'),
             slug: product.slug,
             price: currentPrice,
             image: currentVariant?.image?.src || mainImage?.source_url || '',
-            quantity: 1,
             sku: product.wc_data?.sku,
         });
-        showToast('Đã thêm vào giỏ hàng!', 'success');
+        showToast({ type: 'success', message: 'Đã thêm vào giỏ hàng!' });
     };
 
     const productName = product.title.rendered.replace(/&amp;/g, '&');
@@ -216,8 +215,8 @@ export function ProductCardEnhanced({
                         <button
                             onClick={() => setIsWishlisted(!isWishlisted)}
                             className={`p-2.5 rounded-lg shadow-lg transition ${isWishlisted
-                                    ? 'bg-red-500 text-white'
-                                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                                ? 'bg-red-500 text-white'
+                                : 'bg-white text-gray-600 hover:bg-gray-100'
                                 }`}
                         >
                             <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />
@@ -229,8 +228,8 @@ export function ProductCardEnhanced({
                 {stockStatus !== 'instock' && (
                     <div className="absolute bottom-3 left-3 z-20">
                         <span className={`text-xs font-medium px-2 py-1 rounded-full ${stockStatus === 'outofstock'
-                                ? 'bg-gray-500 text-white'
-                                : 'bg-orange-500 text-white'
+                            ? 'bg-gray-500 text-white'
+                            : 'bg-orange-500 text-white'
                             }`}>
                             {stockStatus === 'outofstock' ? 'Hết hàng' : 'Sắp hết'}
                         </span>
@@ -264,8 +263,8 @@ export function ProductCardEnhanced({
                                     key={option}
                                     onClick={() => setSelectedVariant(variant)}
                                     className={`w-5 h-5 rounded-full border-2 transition-all ${currentVariant?.id === variant.id
-                                            ? 'border-primary ring-2 ring-primary/30'
-                                            : 'border-gray-300 hover:border-gray-400'
+                                        ? 'border-primary ring-2 ring-primary/30'
+                                        : 'border-gray-300 hover:border-gray-400'
                                         }`}
                                     style={{
                                         backgroundColor: getColorCode(option),
@@ -290,8 +289,8 @@ export function ProductCardEnhanced({
                                 <Star
                                     key={star}
                                     className={`h-3 w-3 ${star <= Math.round(rating)
-                                            ? 'text-yellow-400 fill-current'
-                                            : 'text-gray-300'
+                                        ? 'text-yellow-400 fill-current'
+                                        : 'text-gray-300'
                                         }`}
                                 />
                             ))}
@@ -325,8 +324,8 @@ export function ProductCardEnhanced({
                     onClick={handleAddToCart}
                     disabled={stockStatus === 'outofstock'}
                     className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-medium transition-all ${stockStatus === 'outofstock'
-                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                            : 'bg-primary text-white hover:bg-primary/90 shadow-lg hover:shadow-xl'
+                        ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                        : 'bg-primary text-white hover:bg-primary/90 shadow-lg hover:shadow-xl'
                         }`}
                 >
                     {stockStatus === 'outofstock' ? (

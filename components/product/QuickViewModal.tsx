@@ -15,7 +15,7 @@ import {
     Plus,
 } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
-import { useToast } from '@/components/ui/Toast';
+import { useToast } from '@/hooks/useToast';
 
 interface ProductVariant {
     id: number;
@@ -73,7 +73,7 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
     const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
     const [quantity, setQuantity] = useState(1);
     const [isWishlisted, setIsWishlisted] = useState(false);
-    const { addToCart } = useCart();
+    const { addItem } = useCart();
     const { showToast } = useToast();
 
     // Reset state when modal opens
@@ -155,17 +155,16 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
     const stockStatus = currentVariant?.stock_status || product.wc_data?.stock_status || 'instock';
 
     const handleAddToCart = () => {
-        addToCart({
+        addItem({
             id: product.id,
             productId: product.id,
             name: productName,
             slug: product.slug,
             price: currentPrice,
             image: currentVariant?.image?.src || mainImage?.source_url || '',
-            quantity: quantity,
             sku: product.wc_data?.sku,
         });
-        showToast('Đã thêm vào giỏ hàng!', 'success');
+        showToast({ type: 'success', message: 'Đã thêm vào giỏ hàng!' });
         onClose();
     };
 
@@ -241,8 +240,8 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                                         key={idx}
                                         onClick={() => setCurrentImageIndex(idx)}
                                         className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition ${currentImageIndex === idx
-                                                ? 'border-primary'
-                                                : 'border-gray-200 hover:border-gray-300'
+                                            ? 'border-primary'
+                                            : 'border-gray-200 hover:border-gray-300'
                                             }`}
                                     >
                                         <Image
@@ -278,8 +277,8 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                                         <Star
                                             key={star}
                                             className={`h-4 w-4 ${star <= Math.round(rating)
-                                                    ? 'text-yellow-400 fill-current'
-                                                    : 'text-gray-300'
+                                                ? 'text-yellow-400 fill-current'
+                                                : 'text-gray-300'
                                                 }`}
                                         />
                                     ))}
@@ -324,8 +323,8 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                                                 key={option}
                                                 onClick={() => setSelectedVariant(variant)}
                                                 className={`flex items-center gap-2 px-3 py-2 border rounded-lg transition ${currentVariant?.id === variant.id
-                                                        ? 'border-primary bg-primary/10'
-                                                        : 'border-gray-300 hover:border-gray-400'
+                                                    ? 'border-primary bg-primary/10'
+                                                    : 'border-gray-300 hover:border-gray-400'
                                                     }`}
                                             >
                                                 <div
@@ -349,8 +348,8 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                                                 key={option}
                                                 onClick={() => setSelectedVariant(variant)}
                                                 className={`px-3 py-2 border rounded-lg transition ${currentVariant?.id === variant.id
-                                                        ? 'border-primary bg-primary text-white'
-                                                        : 'border-gray-300 hover:border-gray-400'
+                                                    ? 'border-primary bg-primary text-white'
+                                                    : 'border-gray-300 hover:border-gray-400'
                                                     }`}
                                             >
                                                 {option}
@@ -398,8 +397,8 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                                 onClick={handleAddToCart}
                                 disabled={stockStatus === 'outofstock'}
                                 className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium transition ${stockStatus === 'outofstock'
-                                        ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                                        : 'bg-primary text-white hover:bg-primary/90'
+                                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                    : 'bg-primary text-white hover:bg-primary/90'
                                     }`}
                             >
                                 <ShoppingCart className="h-5 w-5" />
@@ -408,8 +407,8 @@ export function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps
                             <button
                                 onClick={() => setIsWishlisted(!isWishlisted)}
                                 className={`p-3 border rounded-lg transition ${isWishlisted
-                                        ? 'border-red-500 text-red-500 bg-red-50'
-                                        : 'border-gray-300 hover:border-gray-400'
+                                    ? 'border-red-500 text-red-500 bg-red-50'
+                                    : 'border-gray-300 hover:border-gray-400'
                                     }`}
                             >
                                 <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-current' : ''}`} />
